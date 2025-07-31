@@ -1,0 +1,7 @@
+.hide {
+  display: none;
+}
+
+canvas {
+  outline: 1px solid black;
+}
