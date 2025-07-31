@@ -38,17 +38,17 @@ export class IdleState implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.lastInput === "d" || input.lastInput === "arrowRight") {
+    if (input.keyManager["d"] || input.keyManager["arrowright"]) {
       this.player.setState(new RunningStateRight(this.player));
       this.player.setDirection(Direction.right);
-    } else if (input.lastInput === "a" || input.lastInput === "arrowLeft") {
+    } else if (input.keyManager["a"] || input.keyManager["arrowleft"]) {
       this.player.setState(new RunningStateLeft(this.player));
       this.player.setDirection(Direction.left);
-    } else if (input.lastInput === " ") {
+    } else if (input.keyManager[" "]) {
       this.player.setState(new JumpingStateStart(this.player));
-    } else if (input.lastInput === "f") {
+    } else if (input.keyManager["f"]) {
       this.player.setState(new AttackingStateGround(this.player));
-    } else if (input.lastInput === "control") {
+    } else if (input.keyManager["control"] && !this.player.slideOnCooldown) {
       if (this.player.direction === Direction.right) {
         this.player.setState(new SlidingStateRight(this.player));
       } else if (this.player.direction === Direction.left) {
@@ -62,7 +62,7 @@ export class IdleState implements PlayerState {
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
     } else {
-      this.player.spritePosition = SpriteFrameCount[Animation.idle];
+      this.player.spritePosition = this.player.maxFrameCount;
     }
   }
 
@@ -76,23 +76,24 @@ export class RunningStateRight implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.lastInput === "a" || input.lastInput === "arrowleft") {
+    if (input.isIdle && this.player.isOnGround()) {
+      this.player.setState(new IdleState(this.player));
+    } else if (input.keyManager["a"] || input.keyManager["arrowleft"]) {
       this.player.setState(new RunningStateLeft(this.player));
       this.player.setDirection(Direction.left);
-    } else if (input.lastInput === " ") {
+    } else if (input.keyManager[" "]) {
       this.player.setState(new JumpingStateStart(this.player));
-    } else if (input.lastInput === "f") {
+    } else if (input.keyManager["f"]) {
       this.player.setState(new AttackingStateGround(this.player));
-    } else if (input.lastInput === "control") {
+    } else if (input.keyManager["control"] && !this.player.slideOnCooldown) {
       this.player.setState(new SlidingStateRight(this.player));
-    } else if (input.isIdle && this.player.isOnGround()) {
-      this.player.setState(new IdleState(this.player));
     }
   }
 
   enter() {
     this.player.spritePosition = 0;
     this.player.animation = Animation.walking;
+    this.player.setDirection(Direction.right);
   }
 
   update() {
@@ -104,14 +105,14 @@ export class RunningStateLeft implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.lastInput === "d" || input.lastInput === "arrowright") {
+    if (input.keyManager["d"] || input.keyManager["arrowright"]) {
       this.player.setState(new RunningStateRight(this.player));
       this.player.setDirection(Direction.right);
-    } else if (input.lastInput === " ") {
+    } else if (input.keyManager[" "]) {
       this.player.setState(new JumpingStateStart(this.player));
-    } else if (input.lastInput === "f") {
+    } else if (input.keyManager["f"]) {
       this.player.setState(new AttackingStateGround(this.player));
-    } else if (input.lastInput === "control") {
+    } else if (input.keyManager["control"] && !this.player.slideOnCooldown) {
       this.player.setState(new SlidingStateLeft(this.player));
     } else if (input.isIdle && this.player.isOnGround()) {
       this.player.setState(new IdleState(this.player));
@@ -119,8 +120,9 @@ export class RunningStateLeft implements PlayerState {
   }
 
   enter() {
-    this.player.spritePosition = SpriteFrameCount[Animation.walking];
+    this.player.spritePosition = this.player.maxFrameCount;
     this.player.animation = Animation.walking;
+    this.player.setDirection(Direction.left);
   }
 
   update() {
@@ -132,19 +134,19 @@ export class JumpingStateStart implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.keyManager["d"]) {
+    if (input.keyManager["d"] || input.keyManager["arrowright"]) {
       this.player.direction = Direction.right;
       this.player.velocityX = this.player.speed;
-    } else if (input.keyManager["a"]) {
+    } else if (input.keyManager["a"] || input.keyManager["arrowleft"]) {
       this.player.direction = Direction.left;
       this.player.velocityX = -this.player.speed;
-    } else if (input.lastInput === "control") {
+    } else if (input.keyManager["control"] && !this.player.slideOnCooldown) {
       if (this.player.direction === Direction.right) {
         this.player.setState(new SlidingStateRight(this.player));
       } else if (this.player.direction === Direction.left) {
         this.player.setState(new SlidingStateLeft(this.player));
       }
-    } else if (input.lastInput === "f") {
+    } else if (input.keyManager["f"]) {
       if (this.player.direction === Direction.right)
         this.player.setState(new AttackingStateAir(this.player));
     } else if (input.isIdle && this.player.isOnGround()) {
@@ -158,15 +160,25 @@ export class JumpingStateStart implements PlayerState {
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
     } else {
-      this.player.spritePosition = SpriteFrameCount[Animation.jumpstart];
+      this.player.spritePosition = this.player.maxFrameCount;
     }
   }
 
   update(): void {
     if (this.player.direction === Direction.right) {
-      this.player.spritePosition = 0;
+      if (
+        this.player.spritePosition >
+        SpriteFrameCount[Animation.jumpstart] - 1
+      ) {
+        this.player.setState(new JumpingStateAscending(this.player));
+      }
     } else {
-      this.player.spritePosition = SpriteFrameCount[Animation.jumpstart];
+      if (
+        this.player.spritePosition <
+        this.player.maxFrameCount - SpriteFrameCount[Animation.jumpstart] + 1
+      ) {
+        this.player.setState(new JumpingStateAscending(this.player));
+      }
     }
   }
 }
@@ -183,10 +195,10 @@ export class JumpingStateAscending implements PlayerState {
       this.player.velocityX = -this.player.speed;
     }
 
-    if (input.lastInput === "f") {
+    if (input.keyManager["f"]) {
       this.player.setState(new AttackingStateAir(this.player));
     }
-    if (input.lastInput === "control") {
+    if (input.keyManager["control"] && !this.player.slideOnCooldown) {
       if (this.player.direction === Direction.right) {
         this.player.setState(new SlidingStateRight(this.player));
       } else if (this.player.direction === Direction.left) {
@@ -207,7 +219,7 @@ export class JumpingStateAscending implements PlayerState {
   }
 
   update() {
-    if (this.player.velocityY < 0) {
+    if (this.player.velocityY > 0) {
       this.player.setState(new JumpingStateDescending(this.player));
     }
   }
@@ -225,10 +237,10 @@ export class JumpingStateDescending implements PlayerState {
       this.player.velocityX = -this.player.speed;
     }
 
-    if (input.lastInput === "f") {
+    if (input.keyManager["f"]) {
       this.player.setState(new AttackingStateAir(this.player));
     }
-    if (input.lastInput === "control") {
+    if (input.keyManager["control"] && !this.player.slideOnCooldown) {
       if (this.player.direction === Direction.right) {
         this.player.setState(new SlidingStateRight(this.player));
       } else if (this.player.direction === Direction.left) {
@@ -240,14 +252,19 @@ export class JumpingStateDescending implements PlayerState {
   }
 
   enter() {
-    this.player.spritePosition = 0;
     this.player.animation = Animation.descending;
+    if (this.player.direction === Direction.right) {
+      this.player.spritePosition = 0;
+    } else {
+      this.player.spritePosition = this.player.maxFrameCount;
+    }
   }
 
   update() {
     if (this.player.isOnGround()) {
       this.player.velocityY = 0;
       this.player.y = this.player.world.groundLevel;
+      this.player.setState(new IdleState(this.player));
     }
   }
 }
@@ -260,13 +277,31 @@ export class AttackingStateGround implements PlayerState {
   }
 
   enter() {
-    this.player.spritePosition = 0;
     this.player.animation = Animation.slashing;
+    if (this.player.direction === Direction.right) {
+      this.player.spritePosition = 0;
+    } else {
+      this.player.spritePosition = this.player.maxFrameCount;
+    }
   }
 
   update() {
-    if (this.player.spritePosition > SpriteFrameCount[Animation.slashing]) {
-      this.player.setState(new JumpingStateAscending(this.player));
+    if (this.player.direction === Direction.right) {
+      this.player.velocityX = this.player.speed / 2;
+      if (
+        this.player.spritePosition >
+        SpriteFrameCount[Animation.slashing] - 1
+      ) {
+        this.player.setState(new IdleState(this.player));
+      }
+    } else {
+      this.player.velocityX = -this.player.speed / 2;
+      if (
+        this.player.spritePosition <
+        this.player.maxFrameCount - SpriteFrameCount[Animation.slashing] + 1
+      ) {
+        this.player.setState(new IdleState(this.player));
+      }
     }
   }
 }
@@ -274,15 +309,47 @@ export class AttackingStateGround implements PlayerState {
 export class AttackingStateAir implements PlayerState {
   constructor(private player: Player) {}
 
-  handleInput(input: InputHandler): void {}
+  handleInput(input: InputHandler): void {
+    return;
+  }
 
   enter() {
-    this.player.spritePosition = 0;
-    this.player.animation = Animation.walking;
+    this.player.animation = Animation.slashingAir;
+    if (this.player.direction === Direction.right) {
+      this.player.spritePosition = 0;
+    } else {
+      this.player.spritePosition = this.player.maxFrameCount;
+    }
   }
 
   update() {
-    this.player.y -= this.player.speed;
+    if (this.player.direction === Direction.right) {
+      this.player.velocityX = this.player.speed / 2;
+      if (
+        this.player.spritePosition >
+        SpriteFrameCount[Animation.slashingAir] - 1
+      ) {
+        this.player.fireProj();
+        if (this.player.isOnGround()) {
+          this.player.setState(new IdleState(this.player));
+        } else {
+          this.player.setState(new JumpingStateDescending(this.player));
+        }
+      }
+    } else {
+      this.player.velocityX = -this.player.speed / 2;
+      if (
+        this.player.spritePosition <
+        this.player.maxFrameCount - SpriteFrameCount[Animation.slashingAir] + 1
+      ) {
+        this.player.fireProj();
+        if (this.player.isOnGround()) {
+          this.player.setState(new IdleState(this.player));
+        } else {
+          this.player.setState(new JumpingStateDescending(this.player));
+        }
+      }
+    }
   }
 }
 
@@ -293,11 +360,26 @@ export class SlidingStateRight implements PlayerState {
 
   enter() {
     this.player.spritePosition = 0;
-    this.player.animation = Animation.walking;
+    this.player.animation = Animation.sliding;
   }
 
   update() {
-    this.player.velocityX += this.player.dashSpeed;
+    this.player.velocityX = this.player.dashSpeed;
+    if (this.player.spritePosition > SpriteFrameCount[Animation.sliding] - 1) {
+      this.setSlideOnCooldown();
+      if (this.player.isOnGround()) {
+        this.player.setState(new IdleState(this.player));
+        return;
+      } else {
+        this.player.setState(new JumpingStateDescending(this.player));
+      }
+    }
+  }
+  setSlideOnCooldown() {
+    this.player.slideOnCooldown = true;
+    setTimeout(() => {
+      this.player.slideOnCooldown = false;
+    }, this.player.slideCooldownTime * 1000);
   }
 }
 
@@ -307,11 +389,30 @@ export class SlidingStateLeft implements PlayerState {
   handleInput(input: InputHandler): void {}
 
   enter() {
-    this.player.spritePosition = 0;
-    this.player.animation = Animation.walking;
+    this.player.spritePosition = this.player.maxFrameCount;
+    this.player.animation = Animation.sliding;
   }
 
   update() {
-    this.player.velocityX = this.player.dashSpeed;
+    this.player.velocityX = -this.player.dashSpeed;
+    if (
+      this.player.spritePosition <
+      this.player.maxFrameCount - SpriteFrameCount[Animation.sliding] + 1
+    ) {
+      this.setSlideOnCooldown();
+      if (this.player.isOnGround()) {
+        this.player.setState(new IdleState(this.player));
+        return;
+      } else {
+        this.player.setState(new JumpingStateDescending(this.player));
+      }
+    }
+  }
+
+  setSlideOnCooldown() {
+    this.player.slideOnCooldown = true;
+    setTimeout(() => {
+      this.player.slideOnCooldown = false;
+    }, this.player.slideCooldownTime * 1000);
   }
 }

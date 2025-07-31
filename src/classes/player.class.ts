@@ -3,6 +3,32 @@ import { IdleState, PlayerState } from "./states.class";
 import { World } from "./world.class";
 import { InputHandler } from "./inputHandler.class";
 
+export enum Animation {
+  dying = 0,
+  descending = 1,
+  hurt = 2,
+  idle = 3,
+  ascending = 4,
+  jumpstart = 5,
+  walking = 6,
+  slashing = 9,
+  slashingAir = 10,
+  sliding = 11,
+}
+
+const SpriteFrameCount: Record<Animation, number> = {
+  [Animation.dying]: 14,
+  [Animation.descending]: 5,
+  [Animation.hurt]: 11,
+  [Animation.idle]: 17,
+  [Animation.ascending]: 5,
+  [Animation.jumpstart]: 5,
+  [Animation.walking]: 23,
+  [Animation.slashing]: 11,
+  [Animation.slashingAir]: 11,
+  [Animation.sliding]: 5,
+};
+
 export class Player extends Character {
   //Draw Values
   width: number = 100;
@@ -17,12 +43,15 @@ export class Player extends Character {
   public animation: Animation = Animation.idle;
   frameWidth: number = 909.16;
   frameHeight: number = 909.16;
+  maxFrameCount: number = 23;
 
   //Char stats
   hp: number = 10;
   speed: number = 10;
   public jumpForce: number = -20;
   public dashSpeed: number = 20;
+  public slideCooldownTime: number = 0.5;
+  public slideOnCooldown: boolean = false;
 
   //State, Handlers, Inputs, etc..
   private state: PlayerState = new IdleState(this);
@@ -45,12 +74,11 @@ export class Player extends Character {
   }
 
   update(): void {
-    console.log(this.isOnGround());
-    console.log(this.velocityY);
     this.state.handleInput(this.inputHandler);
     this.state.update();
     this.setImage();
     this.applyGravity();
+    this.animateSprite();
     this.x += this.velocityX;
     this.y += this.velocityY;
   }
@@ -92,17 +120,21 @@ export class Player extends Character {
       this.velocityY += this.world.gravity;
     }
   }
-}
 
-export enum Animation {
-  dying = 0,
-  descending = 1,
-  hurt = 2,
-  idle = 3,
-  ascending = 4,
-  jumpstart = 5,
-  walking = 6,
-  slashing = 9,
-  slashingAir = 10,
-  sliding = 11,
+  animateSprite() {
+    if (this.direction === Direction.right) {
+      if (this.spritePosition > SpriteFrameCount[this.animation] - 1)
+        this.spritePosition = -1;
+      this.spritePosition++;
+    } else {
+      if (
+        this.spritePosition <
+        this.maxFrameCount - SpriteFrameCount[this.animation] + 1
+      )
+        this.spritePosition = this.maxFrameCount + 1;
+      this.spritePosition--;
+    }
+  }
+
+  fireProj() {}
 }

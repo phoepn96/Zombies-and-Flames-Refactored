@@ -2,25 +2,42 @@ export class InputHandler {
   lastInput: string = "";
   keyManager: KeyManager = {};
   isIdle: boolean = true;
+
+  private relevantKeys = [
+    "w",
+    "a",
+    "s",
+    "d",
+    "arrowup",
+    "arrowdown",
+    "arrowleft",
+    "arrowright",
+    " ",
+    "f",
+    "control",
+  ];
+
   constructor() {
     document.addEventListener("keydown", (event: KeyboardEvent) => {
-      this.lastInput = event.key.toLowerCase();
-      this.keyManager[event.key.toLowerCase()] = true;
-      return this.lastInput;
+      const key = event.key.toLowerCase();
+      if (!this.relevantKeys.includes(key)) return;
+
+      this.lastInput = key;
+      this.keyManager[key] = true;
+      this.updateIdleState();
     });
 
     document.addEventListener("keyup", (event: KeyboardEvent) => {
-      this.keyManager[event.key.toLowerCase()] = false;
-      this.checkIfIdle();
+      const key = event.key.toLowerCase();
+      if (!this.relevantKeys.includes(key)) return;
+
+      this.keyManager[key] = false;
+      this.updateIdleState();
     });
   }
 
-  checkIfIdle() {
-    if (Object.values(this.keyManager).every((value) => value === false)) {
-      this.isIdle = true;
-      return;
-    }
-    this.isIdle = false;
+  private updateIdleState() {
+    this.isIdle = !this.relevantKeys.some((key) => this.keyManager[key]);
   }
 }
 
