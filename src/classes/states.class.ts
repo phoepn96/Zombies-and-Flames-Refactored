@@ -8,7 +8,7 @@ export interface PlayerState {
   update(): void;
 }
 
-export enum Animation {
+export enum AnimationPlayer {
   dying = 0,
   descending = 1,
   hurt = 2,
@@ -21,17 +21,17 @@ export enum Animation {
   sliding = 11,
 }
 
-const SpriteFrameCount: Record<Animation, number> = {
-  [Animation.dying]: 14,
-  [Animation.descending]: 5,
-  [Animation.hurt]: 11,
-  [Animation.idle]: 17,
-  [Animation.ascending]: 5,
-  [Animation.jumpstart]: 5,
-  [Animation.walking]: 23,
-  [Animation.slashing]: 11,
-  [Animation.slashingAir]: 11,
-  [Animation.sliding]: 5,
+const SpriteFrameCount: Record<AnimationPlayer, number> = {
+  [AnimationPlayer.dying]: 14,
+  [AnimationPlayer.descending]: 5,
+  [AnimationPlayer.hurt]: 11,
+  [AnimationPlayer.idle]: 17,
+  [AnimationPlayer.ascending]: 5,
+  [AnimationPlayer.jumpstart]: 5,
+  [AnimationPlayer.walking]: 23,
+  [AnimationPlayer.slashing]: 11,
+  [AnimationPlayer.slashingAir]: 11,
+  [AnimationPlayer.sliding]: 5,
 };
 
 export class IdleState implements PlayerState {
@@ -58,7 +58,7 @@ export class IdleState implements PlayerState {
   }
 
   enter() {
-    this.player.animation = Animation.idle;
+    this.player.animation = AnimationPlayer.idle;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
     } else {
@@ -92,7 +92,7 @@ export class RunningStateRight implements PlayerState {
 
   enter() {
     this.player.spritePosition = 0;
-    this.player.animation = Animation.walking;
+    this.player.animation = AnimationPlayer.walking;
     this.player.setDirection(Direction.right);
   }
 
@@ -121,7 +121,7 @@ export class RunningStateLeft implements PlayerState {
 
   enter() {
     this.player.spritePosition = this.player.maxFrameCount;
-    this.player.animation = Animation.walking;
+    this.player.animation = AnimationPlayer.walking;
     this.player.setDirection(Direction.left);
   }
 
@@ -155,7 +155,7 @@ export class JumpingStateStart implements PlayerState {
   }
 
   enter(): void {
-    this.player.animation = Animation.jumpstart;
+    this.player.animation = AnimationPlayer.jumpstart;
     this.player.velocityY = this.player.jumpForce;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
@@ -168,14 +168,16 @@ export class JumpingStateStart implements PlayerState {
     if (this.player.direction === Direction.right) {
       if (
         this.player.spritePosition >
-        SpriteFrameCount[Animation.jumpstart] - 1
+        SpriteFrameCount[AnimationPlayer.jumpstart] - 1
       ) {
         this.player.setState(new JumpingStateAscending(this.player));
       }
     } else {
       if (
         this.player.spritePosition <
-        this.player.maxFrameCount - SpriteFrameCount[Animation.jumpstart] + 1
+        this.player.maxFrameCount -
+          SpriteFrameCount[AnimationPlayer.jumpstart] +
+          1
       ) {
         this.player.setState(new JumpingStateAscending(this.player));
       }
@@ -210,11 +212,11 @@ export class JumpingStateAscending implements PlayerState {
   }
 
   enter() {
-    this.player.animation = Animation.ascending;
+    this.player.animation = AnimationPlayer.ascending;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
     } else {
-      this.player.spritePosition = SpriteFrameCount[Animation.ascending];
+      this.player.spritePosition = SpriteFrameCount[AnimationPlayer.ascending];
     }
   }
 
@@ -252,7 +254,7 @@ export class JumpingStateDescending implements PlayerState {
   }
 
   enter() {
-    this.player.animation = Animation.descending;
+    this.player.animation = AnimationPlayer.descending;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
     } else {
@@ -277,7 +279,7 @@ export class AttackingStateGround implements PlayerState {
   }
 
   enter() {
-    this.player.animation = Animation.slashing;
+    this.player.animation = AnimationPlayer.slashing;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
     } else {
@@ -290,16 +292,20 @@ export class AttackingStateGround implements PlayerState {
       this.player.velocityX = -this.player.speed / 2;
       if (
         this.player.spritePosition >
-        SpriteFrameCount[Animation.slashing] - 1
+        SpriteFrameCount[AnimationPlayer.slashing] - 1
       ) {
+        this.player.fireProj();
         this.player.setState(new IdleState(this.player));
       }
     } else {
       this.player.velocityX = this.player.speed / 2;
       if (
         this.player.spritePosition <
-        this.player.maxFrameCount - SpriteFrameCount[Animation.slashing] + 1
+        this.player.maxFrameCount -
+          SpriteFrameCount[AnimationPlayer.slashing] +
+          1
       ) {
+        this.player.fireProj();
         this.player.setState(new IdleState(this.player));
       }
     }
@@ -314,7 +320,7 @@ export class AttackingStateAir implements PlayerState {
   }
 
   enter() {
-    this.player.animation = Animation.slashingAir;
+    this.player.animation = AnimationPlayer.slashingAir;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
     } else {
@@ -327,7 +333,7 @@ export class AttackingStateAir implements PlayerState {
       this.player.velocityX = -this.player.speed / 2;
       if (
         this.player.spritePosition >
-        SpriteFrameCount[Animation.slashingAir] - 1
+        SpriteFrameCount[AnimationPlayer.slashingAir] - 1
       ) {
         this.player.fireProj();
         if (this.player.isOnGround()) {
@@ -340,7 +346,9 @@ export class AttackingStateAir implements PlayerState {
       this.player.velocityX = this.player.speed / 2;
       if (
         this.player.spritePosition <
-        this.player.maxFrameCount - SpriteFrameCount[Animation.slashingAir] + 1
+        this.player.maxFrameCount -
+          SpriteFrameCount[AnimationPlayer.slashingAir] +
+          1
       ) {
         this.player.fireProj();
         if (this.player.isOnGround()) {
@@ -360,12 +368,15 @@ export class SlidingStateRight implements PlayerState {
 
   enter() {
     this.player.spritePosition = 0;
-    this.player.animation = Animation.sliding;
+    this.player.animation = AnimationPlayer.sliding;
   }
 
   update() {
     this.player.velocityX = this.player.dashSpeed;
-    if (this.player.spritePosition > SpriteFrameCount[Animation.sliding] - 1) {
+    if (
+      this.player.spritePosition >
+      SpriteFrameCount[AnimationPlayer.sliding] - 1
+    ) {
       this.setSlideOnCooldown();
       if (this.player.isOnGround()) {
         this.player.setState(new IdleState(this.player));
@@ -390,14 +401,14 @@ export class SlidingStateLeft implements PlayerState {
 
   enter() {
     this.player.spritePosition = this.player.maxFrameCount;
-    this.player.animation = Animation.sliding;
+    this.player.animation = AnimationPlayer.sliding;
   }
 
   update() {
     this.player.velocityX = -this.player.dashSpeed;
     if (
       this.player.spritePosition <
-      this.player.maxFrameCount - SpriteFrameCount[Animation.sliding] + 1
+      this.player.maxFrameCount - SpriteFrameCount[AnimationPlayer.sliding] + 1
     ) {
       this.setSlideOnCooldown();
       if (this.player.isOnGround()) {

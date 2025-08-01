@@ -6,6 +6,7 @@ import {
   SecondLayer,
   ThirdLayer,
 } from "./background.class";
+import { Boss, Enemie } from "./enemie.class";
 import { Player } from "./player.class";
 
 export class World {
@@ -13,10 +14,11 @@ export class World {
   height: number;
   groundLevel: number = 350;
   centerScreen: number;
-  playerStartingX: number = 50;
-  player: Player = new Player(500, this.groundLevel, this);
+  playerStartingX: number;
+  player: Player;
   gravity: number = 1;
   backgrounds: Background[][] = [];
+  enemies: Enemie[] = [new Boss(200, this.groundLevel - 40, this)];
 
   constructor(
     public canvas: HTMLCanvasElement,
@@ -24,6 +26,8 @@ export class World {
   ) {
     this.width = this.canvas.width;
     this.height = this.canvas.height;
+    this.centerScreen = this.width / 2 - 50;
+    this.playerStartingX = this.centerScreen;
     this.player = new Player(this.playerStartingX, this.groundLevel, this);
     this.player.initImgs();
     this.backgrounds = [
@@ -53,17 +57,18 @@ export class World {
         new ForthLayer(this, 2),
       ],
     ];
-    this.centerScreen = this.width / 2;
   }
 
   update() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.player.update();
     this.updateBackgrounds();
+    this.updateEnemies();
   }
 
   draw() {
     this.drawBackgrounds();
+    this.drawEnemies();
     this.player.draw();
   }
 
@@ -80,6 +85,14 @@ export class World {
       this.checkPlatformsRight(backgroundLayerArr);
       this.checkPlatformLeft(backgroundLayerArr);
     });
+  }
+
+  updateEnemies() {
+    this.enemies.forEach((enemy) => enemy.update);
+  }
+
+  drawEnemies() {
+    this.enemies.forEach((enemy) => enemy.draw());
   }
 
   checkPlatformsRight(backgroundArr: Background[]) {

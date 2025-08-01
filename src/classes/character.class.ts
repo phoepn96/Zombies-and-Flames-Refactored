@@ -1,4 +1,7 @@
+import { Hitbox } from "./hitbox.class";
+import { AnimationPlayer } from "./player.class";
 import { World } from "./world.class";
+import { AnimationEnemie } from "./enemie.class";
 
 export abstract class Character {
   //Draw Values
@@ -16,7 +19,7 @@ export abstract class Character {
   //Animation Values
   abstract frameWidth: number;
   abstract frameHeight: number;
-  abstract animation: unknown;
+  abstract animation: AnimationPlayer | AnimationEnemie;
   public spritePosition: number = 0;
   public direction: Direction = Direction.right;
 
@@ -25,6 +28,14 @@ export abstract class Character {
   abstract speed: number;
   public velocityX: number = 0;
   public velocityY: number = 0;
+  abstract projectileSpeed: number;
+
+  //Hitbox
+  abstract hitbox: Hitbox;
+  abstract hitboxOffsetX: number;
+  abstract hitboxOffsetY: number;
+  abstract hitboxOffsetWidth: number;
+  abstract hitboxOffsetHeight: number;
 
   constructor(startingX: number, startingY: number, world: World) {
     this.x = startingX;
@@ -33,7 +44,20 @@ export abstract class Character {
   }
 
   abstract update(): void;
-  abstract draw(): void;
+
+  draw(): void {
+    this.world.ctx.drawImage(
+      this.img,
+      this.frameWidth * this.spritePosition,
+      this.frameHeight * this.animation,
+      this.frameWidth,
+      this.frameHeight,
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  }
   abstract setDirection(direction: Direction): void;
 }
 

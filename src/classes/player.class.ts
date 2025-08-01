@@ -2,8 +2,10 @@ import { Character, Direction } from "./character.class";
 import { IdleState, PlayerState } from "./states.class";
 import { World } from "./world.class";
 import { InputHandler } from "./inputHandler.class";
+import { Hitbox } from "./hitbox.class";
+import { Projectile } from "./projectile.class";
 
-export enum Animation {
+export enum AnimationPlayer {
   dying = 0,
   descending = 1,
   hurt = 2,
@@ -16,17 +18,17 @@ export enum Animation {
   sliding = 11,
 }
 
-const SpriteFrameCount: Record<Animation, number> = {
-  [Animation.dying]: 14,
-  [Animation.descending]: 5,
-  [Animation.hurt]: 11,
-  [Animation.idle]: 17,
-  [Animation.ascending]: 5,
-  [Animation.jumpstart]: 5,
-  [Animation.walking]: 23,
-  [Animation.slashing]: 11,
-  [Animation.slashingAir]: 11,
-  [Animation.sliding]: 5,
+const SpriteFrameCount: Record<AnimationPlayer, number> = {
+  [AnimationPlayer.dying]: 14,
+  [AnimationPlayer.descending]: 5,
+  [AnimationPlayer.hurt]: 11,
+  [AnimationPlayer.idle]: 17,
+  [AnimationPlayer.ascending]: 5,
+  [AnimationPlayer.jumpstart]: 5,
+  [AnimationPlayer.walking]: 23,
+  [AnimationPlayer.slashing]: 11,
+  [AnimationPlayer.slashingAir]: 11,
+  [AnimationPlayer.sliding]: 5,
 };
 
 export class Player extends Character {
@@ -40,7 +42,7 @@ export class Player extends Character {
   protected img!: HTMLImageElement;
 
   //Animation Values
-  public animation: Animation = Animation.idle;
+  public animation: AnimationPlayer = AnimationPlayer.idle;
   frameWidth: number = 909.16;
   frameHeight: number = 909.16;
   maxFrameCount: number = 23;
@@ -52,15 +54,30 @@ export class Player extends Character {
   public dashSpeed: number = 20;
   public slideCooldownTime: number = 0.5;
   public slideOnCooldown: boolean = false;
+  projectileSpeed: number = 10;
 
   //State, Handlers, Inputs, etc..
   private state: PlayerState = new IdleState(this);
   private inputHandler: InputHandler = new InputHandler();
   public direction: Direction = Direction.right;
-  //public projectiles: Projectiles[] = [];
+  public hitbox: Hitbox;
+  hitboxOffsetX: number = -25;
+  hitboxOffsetY: number = -15;
+  hitboxOffsetWidth: number = -50;
+  hitboxOffsetHeight: number = -30;
+  public projectiles: Projectile[] = [];
 
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
+    this.hitbox = new Hitbox(
+      this,
+      this.width,
+      this.height,
+      this.hitboxOffsetX,
+      this.hitboxOffsetY,
+      this.hitboxOffsetWidth,
+      this.hitboxOffsetHeight
+    );
   }
 
   initImgs() {
@@ -82,6 +99,8 @@ export class Player extends Character {
     this.animateSprite();
     this.move();
     this.y += this.velocityY;
+    this.hitbox.update();
+    this.updateProj();
   }
 
   draw(): void {
@@ -96,6 +115,8 @@ export class Player extends Character {
       this.width,
       this.height
     );
+    this.hitbox.draw();
+    this.drawProj();
   }
 
   setImage() {
@@ -145,5 +166,19 @@ export class Player extends Character {
     }
   }
 
-  fireProj() {}
+  fireProj() {
+    this.projectiles.push(new Projectile(this, this.world.ctx));
+  }
+
+  updateProj() {
+    this.projectiles.forEach((proj) => {
+      proj.update();
+    });
+  }
+
+  drawProj() {
+    this.projectiles.forEach((proj) => proj.draw());
+  }
+
+  attack() {}
 }
