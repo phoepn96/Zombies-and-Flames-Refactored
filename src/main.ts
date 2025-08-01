@@ -2,7 +2,7 @@ import { World } from "./classes/world.class";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-const targetFps: number = 60;
+const targetFps: number = 45;
 const targetFrameTime = 1000 / targetFps;
 let lastTime: number = 0;
 let accumulator: number = 0;

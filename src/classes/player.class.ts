@@ -57,6 +57,7 @@ export class Player extends Character {
   private state: PlayerState = new IdleState(this);
   private inputHandler: InputHandler = new InputHandler();
   public direction: Direction = Direction.right;
+  //public projectiles: Projectiles[] = [];
 
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
@@ -79,7 +80,7 @@ export class Player extends Character {
     this.setImage();
     this.applyGravity();
     this.animateSprite();
-    this.x += this.velocityX;
+    this.move();
     this.y += this.velocityY;
   }
 
@@ -103,6 +104,14 @@ export class Player extends Character {
     } else {
       this.img = this.imgLeft;
     }
+  }
+
+  move() {
+    this.world.backgrounds.forEach((backgroundLayerArr) => {
+      backgroundLayerArr.forEach((background) => {
+        background.moveBackground(this.velocityX);
+      });
+    });
   }
 
   isOnGround(): boolean {

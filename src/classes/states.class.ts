@@ -287,7 +287,7 @@ export class AttackingStateGround implements PlayerState {
 
   update() {
     if (this.player.direction === Direction.right) {
-      this.player.velocityX = this.player.speed / 2;
+      this.player.velocityX = -this.player.speed / 2;
       if (
         this.player.spritePosition >
         SpriteFrameCount[Animation.slashing] - 1
@@ -295,7 +295,7 @@ export class AttackingStateGround implements PlayerState {
         this.player.setState(new IdleState(this.player));
       }
     } else {
-      this.player.velocityX = -this.player.speed / 2;
+      this.player.velocityX = this.player.speed / 2;
       if (
         this.player.spritePosition <
         this.player.maxFrameCount - SpriteFrameCount[Animation.slashing] + 1
@@ -324,7 +324,7 @@ export class AttackingStateAir implements PlayerState {
 
   update() {
     if (this.player.direction === Direction.right) {
-      this.player.velocityX = this.player.speed / 2;
+      this.player.velocityX = -this.player.speed / 2;
       if (
         this.player.spritePosition >
         SpriteFrameCount[Animation.slashingAir] - 1
@@ -337,7 +337,7 @@ export class AttackingStateAir implements PlayerState {
         }
       }
     } else {
-      this.player.velocityX = -this.player.speed / 2;
+      this.player.velocityX = this.player.speed / 2;
       if (
         this.player.spritePosition <
         this.player.maxFrameCount - SpriteFrameCount[Animation.slashingAir] + 1
