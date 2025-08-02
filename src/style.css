@@ -1,7 +1,66 @@
+* {
+  padding: none;
+  margin: none;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-image: url("/assets/spritesheets/bg/indexBg.png");
+}
+
 .hide {
   display: none;
 }
 
 canvas {
   outline: 1px solid black;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 720px;
+  height: 480px;
+  z-index: 100;
+  background-image: url("/assets/spritesheets/bg/menuBg.png");
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+}
+
+#startGame {
+  grid-column: 2/3;
+  grid-row: 3/4;
+}
+
+.menu {
+  width: 200px;
+  height: 50px;
+  background: linear-gradient(rgb(138, 16, 16), rgb(58, 9, 9));
+  border: none;
+  border-radius: 15px;
+  color: rgb(0, 0, 0);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 700;
+}
+
+.menu:hover {
+  cursor: pointer;
+}
+
+#logo {
+  grid-column: 1/4;
+  grid-row: 2/3;
+  width: 200px;
+  height: 200px;
 }

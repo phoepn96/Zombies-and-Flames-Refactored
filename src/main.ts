@@ -1,5 +1,9 @@
 import { World } from "./classes/world.class";
 
+const menu: HTMLDivElement = document.getElementById(
+  "gameMenu"
+) as HTMLDivElement;
+
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 const targetFps: number = 45;
@@ -29,4 +33,8 @@ function startGame(): void {
   requestAnimationFrame(gameLoop);
 }
 
-startGame();
+menu.addEventListener("click", () => {
+  menu.classList.add("hide");
+  canvas.classList.remove("hide");
+  startGame();
+});

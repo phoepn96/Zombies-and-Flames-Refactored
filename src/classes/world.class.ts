@@ -6,8 +6,11 @@ import {
   SecondLayer,
   ThirdLayer,
 } from "./background.class";
+import { Crystal } from "./crystal.class";
 import { Boss, Enemie, Zombie1, Zombie2 } from "./enemie.class";
+import { EnemyHurtState } from "./enemieStates.class";
 import { Player } from "./player.class";
+import { HurtState, JumpingStateAscending } from "./states.class";
 
 export class World {
   width: number;
@@ -19,6 +22,7 @@ export class World {
   gravity: number = 1;
   backgrounds: Background[][] = [];
   enemies: Enemie[] = [];
+  crystals: Crystal[] = [];
 
   constructor(
     public canvas: HTMLCanvasElement,
@@ -33,6 +37,11 @@ export class World {
       new Boss(200, this.groundLevel - 40, this),
       new Zombie1(50, this.groundLevel, this),
       new Zombie2(400, this.groundLevel, this),
+    ];
+    this.crystals = [
+      new Crystal(200, this.groundLevel + 30, this),
+      new Crystal(400, this.groundLevel + 30, this),
+      new Crystal(50, this.groundLevel + 30, this),
     ];
     this.player.initImgs();
     this.backgrounds = [
@@ -70,14 +79,29 @@ export class World {
     this.updateBackgrounds();
     this.updateEnemies();
     this.killEnemy();
+    this.checkCollisions();
+    this.deleteCrystals();
+    this.updateCrystals();
   }
 
   draw() {
     this.drawBackgrounds();
     this.drawEnemies();
     this.player.draw();
+    this.drawCrystals();
   }
 
+  drawCrystals() {
+    this.crystals.forEach((crystal) => {
+      crystal.draw();
+    });
+  }
+
+  updateCrystals() {
+    this.crystals.forEach((crystal) => {
+      crystal.update();
+    });
+  }
   drawBackgrounds() {
     this.backgrounds.forEach((backgroundLayerArr) => {
       backgroundLayerArr.forEach((backgroundLayer) => {
@@ -95,6 +119,13 @@ export class World {
 
   updateEnemies() {
     this.enemies.forEach((enemy) => enemy.update());
+  }
+
+  checkCollisions() {
+    this.enemies.forEach((enemy) => {
+      this.checkStomp(enemy);
+      this.checkSideCollision(enemy);
+    });
   }
 
   drawEnemies() {
@@ -123,10 +154,60 @@ export class World {
     }
   }
 
+  deleteCrystals() {
+    this.crystals = this.crystals.filter((crystal) => {
+      return !crystal.isPickedUp;
+    });
+  }
+
   killEnemy() {
     this.enemies = this.enemies.filter((enemy) => {
       return !enemy.isDead;
     });
+  }
+
+  checkStomp(enemy: Enemie) {
+    const player = this.player;
+    player.hitbox.update();
+    enemy.hitbox.update();
+    const p = player.hitbox;
+    const e = enemy.hitbox;
+    const playerBottom = p.y + p.height;
+    const enemyTop = e.y;
+    const isHorizontalOverlap = p.x < e.x + e.width && p.x + p.width > e.x;
+    const isVerticalOverlap = playerBottom >= enemyTop && p.y < e.y + e.height;
+    const isFalling = player.y < 600;
+    if (this.player.stompCooldown === true) return;
+    if (isHorizontalOverlap && isVerticalOverlap && isFalling) {
+      enemy.setState(new EnemyHurtState(this.player, enemy));
+      this.player.velocityY = this.player.jumpForce;
+      this.player.setState(new JumpingStateAscending(this.player));
+      this.player.stompCooldown = true;
+      setTimeout(() => {
+        this.player.stompCooldown = false;
+      }, this.player.stompCooldownTime * 1000);
+    }
+  }
+
+  checkSideCollision(enemy: Enemie) {
+    this.player.hitbox.update();
+    enemy.hitbox.update();
+    const p = this.player.hitbox;
+    const e = enemy.hitbox;
+    const playerBottom = p.y + p.height;
+    const enemyTop = e.y;
+    const isHorizontalCollision = p.x < e.x + e.width && p.x + p.width > e.x;
+    const isVerticalOverlap = playerBottom > enemyTop && p.y < e.y + e.height;
+    const notFromAbove = playerBottom <= enemyTop + 5;
+    if (
+      isHorizontalCollision &&
+      isVerticalOverlap &&
+      !notFromAbove &&
+      !this.player.hitOnCooldown
+    ) {
+      this.player.setState(new HurtState(this.player));
+      enemy.setState(new EnemyHurtState(this.player, enemy));
+    }
   }
   gameOver() {}
 

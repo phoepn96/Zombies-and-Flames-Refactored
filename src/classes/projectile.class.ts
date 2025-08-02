@@ -1,6 +1,8 @@
 import { Character, Direction } from "./character.class";
+import { EnemyHurtState } from "./enemieStates.class";
 import { Hitbox } from "./hitbox.class";
 import { Player } from "./player.class";
+import { HurtState } from "./states.class";
 import { World } from "./world.class";
 
 const playerProjRight: HTMLImageElement = document.getElementById(
@@ -90,7 +92,6 @@ export class Projectile {
       this.hitboxOffsetWidth,
       this.hitboxOffsetHeight
     );
-    console.log(this.originClass instanceof Player);
   }
 
   update() {
@@ -98,6 +99,7 @@ export class Projectile {
     this.checkIfOutOfScreen();
     this.animateProj();
     this.hitbox.update();
+    this.checkCollision();
     if (this.origin === "player") {
       if (this.direction === Direction.right) {
         this.img = this.imgRight;
@@ -119,7 +121,6 @@ export class Projectile {
       this.projectileSizeWidth,
       this.projectileSizeHeight
     );
-    this.hitbox.draw();
   }
 
   moveProj() {
@@ -158,5 +159,39 @@ export class Projectile {
 
   move() {
     this.x -= this.world.player.velocityX * 0.5;
+  }
+
+  checkCollision() {
+    if (this.originClass instanceof Player) {
+      this.originClass.world.enemies.forEach((enemy) => {
+        if (
+          this.hitbox.x < enemy.hitbox.x + enemy.hitbox.width &&
+          this.hitbox.x + this.hitbox.width > enemy.hitbox.x &&
+          this.hitbox.y < enemy.hitbox.y + enemy.hitbox.height &&
+          this.hitbox.y + this.hitbox.height > enemy.hitbox.y
+        ) {
+          enemy.setState(new EnemyHurtState(this.world.player, enemy));
+          this.removeProj = true;
+        }
+      });
+    } else {
+      if (
+        this.hitbox.x <
+          this.originClass.world.player.hitbox.x +
+            this.originClass.world.player.hitbox.width &&
+        this.hitbox.x + this.hitbox.width >
+          this.originClass.world.player.hitbox.x &&
+        this.hitbox.y <
+          this.originClass.world.player.hitbox.y +
+            this.originClass.world.player.hitbox.height &&
+        this.hitbox.y + this.hitbox.height >
+          this.originClass.world.player.hitbox.y
+      ) {
+        this.originClass.world.player.setState(
+          new HurtState(this.originClass.world.player)
+        );
+        this.removeProj = true;
+      }
+    }
   }
 }

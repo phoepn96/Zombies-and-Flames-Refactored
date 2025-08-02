@@ -58,9 +58,12 @@ export class Player extends Character {
   projectileSpeed: number = 10;
   public hitCooldown: number = 1;
   public hitOnCooldown = false;
+  public stompCooldownTime = 0.2;
+  public stompCooldown = false;
+  public crystals: number = 0;
 
   //State, Handlers, Inputs, etc..
-  private state: PlayerState = new IdleState(this);
+  public state: PlayerState = new IdleState(this);
   private inputHandler: InputHandler = new InputHandler();
   public direction: Direction = Direction.right;
   public hitbox: Hitbox;
@@ -69,6 +72,12 @@ export class Player extends Character {
   hitboxOffsetWidth: number = -50;
   hitboxOffsetHeight: number = -30;
   public projectiles: Projectile[] = [];
+  public lifebar: HTMLImageElement = document.getElementById(
+    "lifebar"
+  ) as HTMLImageElement;
+  public crystal: HTMLImageElement = document.getElementById(
+    "crystals"
+  ) as HTMLImageElement;
 
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
@@ -102,8 +111,10 @@ export class Player extends Character {
     this.animateSprite();
     this.move();
     this.y += this.velocityY;
-    this.hitbox.update();
     this.updateProj();
+    this.hitbox.update();
+    this.removeProjectiles();
+    this.resetGround();
   }
 
   draw(): void {
@@ -118,8 +129,8 @@ export class Player extends Character {
       this.width,
       this.height
     );
-    this.hitbox.draw();
     this.drawProj();
+    this.drawLifebarAndCrystals();
   }
 
   setImage() {
@@ -141,6 +152,9 @@ export class Player extends Character {
       if (enemy instanceof Boss) {
         enemy.projectiles.forEach((proj) => proj.move());
       }
+    });
+    this.world.crystals.forEach((crystal) => {
+      crystal.move();
     });
   }
 
@@ -189,5 +203,23 @@ export class Player extends Character {
     this.projectiles.forEach((proj) => proj.draw());
   }
 
-  attack() {}
+  removeProjectiles() {
+    this.projectiles = this.projectiles.filter((projectile) => {
+      return !projectile.removeProj;
+    });
+  }
+
+  drawLifebarAndCrystals() {
+    this.world.ctx.drawImage(this.lifebar, 50, 50, 75, 75);
+    this.world.ctx.fillStyle = "white";
+    this.world.ctx.fillText(this.hp.toString(), 84, 90);
+    this.world.ctx.drawImage(this.crystal, 0, 0, 512, 512, 580, 50, 75, 75);
+    this.world.ctx.fillText(this.crystals.toString(), 617, 95);
+  }
+
+  resetGround() {
+    if (this.y > this.world.groundLevel) {
+      this.y = this.world.groundLevel;
+    }
+  }
 }

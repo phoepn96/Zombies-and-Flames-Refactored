@@ -372,11 +372,16 @@ export class SlidingStateRight implements PlayerState {
   }
 
   update() {
+    if (this.player.crystals <= 0) {
+      this.player.setState(new IdleState(this.player));
+      return;
+    }
     this.player.velocityX = this.player.dashSpeed;
     if (
       this.player.spritePosition >
       SpriteFrameCount[AnimationPlayer.sliding] - 1
     ) {
+      this.player.crystals--;
       this.setSlideOnCooldown();
       if (this.player.isOnGround()) {
         this.player.setState(new IdleState(this.player));
@@ -405,11 +410,18 @@ export class SlidingStateLeft implements PlayerState {
   }
 
   update() {
+    if (this.player.crystals <= 0) {
+      this.player.setState(new IdleState(this.player));
+      return;
+    }
+
     this.player.velocityX = -this.player.dashSpeed;
+
     if (
       this.player.spritePosition <
       this.player.maxFrameCount - SpriteFrameCount[AnimationPlayer.sliding] + 1
     ) {
+      this.player.crystals--;
       this.setSlideOnCooldown();
       if (this.player.isOnGround()) {
         this.player.setState(new IdleState(this.player));
@@ -434,6 +446,12 @@ export class HurtState implements PlayerState {
   handleInput(input: InputHandler): void {}
 
   enter() {
+    if (this.player.hitOnCooldown) return;
+    this.player.hitOnCooldown = true;
+    setTimeout(() => {
+      this.player.hitOnCooldown = false;
+    }, 1000 * this.player.hitCooldown);
+    this.player.hp -= 1;
     this.player.animation = AnimationPlayer.hurt;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;

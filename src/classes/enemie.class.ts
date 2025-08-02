@@ -46,6 +46,8 @@ export abstract class Enemie extends Character {
   attackCooldownTime: number = 3;
   attackOnCooldown = false;
   isDead = false;
+  hurtCooldown: number = 0.5;
+  hurtOnCooldown: boolean = false;
   state: EnemyState = new EnemyWalkingState(this.world.player, this);
   animation: AnimationEnemie = AnimationEnemie.walking;
   constructor(startingX: number, startingY: number, world: World) {
@@ -162,6 +164,7 @@ export class Boss extends Enemie {
     this.animateSprite();
     this.checkDirection();
     this.projectiles.forEach((proj) => proj.update());
+    this.removeProjectiles();
   }
 
   draw() {
@@ -177,8 +180,6 @@ export class Boss extends Enemie {
       this.width,
       this.height
     );
-    this.hitbox.draw();
-    this.removeProjectiles();
   }
 
   removeProjectiles() {

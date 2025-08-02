@@ -121,6 +121,12 @@ export class EnemyHurtState implements EnemyState {
   constructor(private player: Player, private enemy: Enemie) {}
   checkForAction(): void {}
   enter(): void {
+    if (this.enemy.hurtOnCooldown) return;
+    this.enemy.hp--;
+    this.enemy.hurtOnCooldown = true;
+    setTimeout(() => {
+      this.enemy.hurtOnCooldown = false;
+    }, 1000 * this.enemy.hurtCooldown);
     this.enemy.animation = AnimationEnemie.hurt;
     if (this.enemy.direction === Direction.right) {
       this.enemy.spritePosition = 0;
@@ -166,7 +172,7 @@ export class EnemyDyingState implements EnemyState {
     if (this.enemy.direction === Direction.right) {
       if (
         this.enemy.spritePosition >
-        SpriteFrameCountEnemy[AnimationEnemie.dying] - 1
+        SpriteFrameCountEnemy[AnimationEnemie.dying] - 2
       ) {
         if (this.enemy instanceof Boss) {
           this.enemy.world.won();
@@ -178,12 +184,13 @@ export class EnemyDyingState implements EnemyState {
         this.enemy.spritePosition <
         this.enemy.maxFrameCount -
           SpriteFrameCountEnemy[AnimationEnemie.dying] +
-          1
+          2
       ) {
         if (this.enemy instanceof Boss) {
           this.enemy.world.won();
         }
         this.enemy.isDead = true;
+        console.log("dead");
       }
     }
   }

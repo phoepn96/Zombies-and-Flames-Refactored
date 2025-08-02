@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <canvas id="canvas" width="720" height="480"></canvas>
+    <canvas id="canvas" width="720" height="480" class="hide"></canvas>
 
     <img
       class="hide"
@@ -65,12 +65,30 @@
       id="playerProjLeft"
       class="hide"
     />
+    <img src="/assets/spritesheets/bg/lifebar.png" id="lifebar" class="hide" />
+
+    <main id="gameMenu">
+      <button class="menu" id="impressum">Impressum</button>
+      <button class="menu" id="controls">Steuerung</button>
+      <button class="menu" id="gameplay">Spielverlauf</button>
+      <img
+        id="logo"
+        alt="zombies and flames"
+        src="/assets/spritesheets/bg/logo.png"
+      />
+      <button class="menu big" id="startGame">Spielen</button>
+    </main>
 
     <img src="/assets/spritesheets/bg/bg.png" id="bg" class="hide" />
     <img src="/assets/spritesheets/bg/first.png" id="first" class="hide" />
     <img src="/assets/spritesheets/bg/second.png" id="second" class="hide" />
     <img src="/assets/spritesheets/bg/third.png" id="third" class="hide" />
     <img src="/assets/spritesheets/bg/forth.png" id="forth" class="hide" />
+    <img
+      src="/assets/spritesheets/bg/crystals.png"
+      id="crystals"
+      class="hide"
+    />
     <script type="module" src="src/main.ts" defer></script>
   </body>
 </html>

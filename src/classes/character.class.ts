@@ -58,7 +58,6 @@ export abstract class Character {
       this.width,
       this.height
     );
-    this.hitbox.draw();
   }
   abstract setDirection(direction: Direction): void;
 }
