@@ -1,10 +1,13 @@
-import { Character } from "./character.class";
+import { Character, Direction } from "./character.class";
 import { Hitbox } from "./hitbox.class";
 import { Player } from "./player.class";
 import { World } from "./world.class";
 
-const playerProj: HTMLImageElement = document.getElementById(
+const playerProjRight: HTMLImageElement = document.getElementById(
   "playerProj"
+) as HTMLImageElement;
+const playerProjLeft: HTMLImageElement = document.getElementById(
+  "playerProjLeft"
 ) as HTMLImageElement;
 const bossProj: HTMLImageElement = document.getElementById(
   "bossProj"
@@ -24,7 +27,7 @@ export class Projectile {
   spriteRow!: number;
   origin: string = "player";
   removeProj: boolean = false;
-  direction: string = "right";
+  direction: Direction = Direction.right;
   projectileSizeWidth!: number;
   projectileSizeHeight!: number;
   hitbox!: Hitbox;
@@ -34,6 +37,8 @@ export class Projectile {
   hitboxOffsetHeight: number = -70;
   bossProjDuration: number = 2;
   counter: number = 0;
+  imgRight: HTMLImageElement = playerProjRight;
+  imgLeft: HTMLImageElement = playerProjLeft;
 
   constructor(originClass: Character, ctx: CanvasRenderingContext2D) {
     this.x = originClass.x;
@@ -43,10 +48,9 @@ export class Projectile {
     this.originClass = originClass;
     this.ctx = ctx;
     this.direction = originClass.direction;
-    console.log(this);
 
     if (originClass instanceof Player) {
-      this.img = playerProj;
+      this.img = playerProjRight;
       this.spriteRow = 0;
       this.spriteWidth = 1660;
       this.spriteHeight = 1070;
@@ -69,7 +73,7 @@ export class Projectile {
       this.hitboxOffsetWidth = -40;
       this.hitboxOffsetHeight = -20;
       this.origin = "boss";
-      this.y = originClass.y + 10;
+      this.y = originClass.y + 22;
       if (this.direction === "right") {
         this.x = originClass.x + originClass.width - 40;
       } else {
@@ -94,6 +98,13 @@ export class Projectile {
     this.checkIfOutOfScreen();
     this.animateProj();
     this.hitbox.update();
+    if (this.origin === "player") {
+      if (this.direction === Direction.right) {
+        this.img = this.imgRight;
+      } else {
+        this.img = this.imgLeft;
+      }
+    }
   }
 
   draw() {
@@ -143,5 +154,9 @@ export class Projectile {
       }
       this.spritePosition++;
     }
+  }
+
+  move() {
+    this.x -= this.world.player.velocityX * 0.5;
   }
 }

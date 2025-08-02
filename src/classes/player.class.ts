@@ -4,6 +4,7 @@ import { World } from "./world.class";
 import { InputHandler } from "./inputHandler.class";
 import { Hitbox } from "./hitbox.class";
 import { Projectile } from "./projectile.class";
+import { Boss } from "./enemie.class";
 
 export enum AnimationPlayer {
   dying = 0,
@@ -18,7 +19,7 @@ export enum AnimationPlayer {
   sliding = 11,
 }
 
-const SpriteFrameCount: Record<AnimationPlayer, number> = {
+export const SpriteFrameCount: Record<AnimationPlayer, number> = {
   [AnimationPlayer.dying]: 14,
   [AnimationPlayer.descending]: 5,
   [AnimationPlayer.hurt]: 11,
@@ -55,6 +56,8 @@ export class Player extends Character {
   public slideCooldownTime: number = 0.5;
   public slideOnCooldown: boolean = false;
   projectileSpeed: number = 10;
+  public hitCooldown: number = 1;
+  public hitOnCooldown = false;
 
   //State, Handlers, Inputs, etc..
   private state: PlayerState = new IdleState(this);
@@ -132,6 +135,12 @@ export class Player extends Character {
       backgroundLayerArr.forEach((background) => {
         background.moveBackground(this.velocityX);
       });
+    });
+    this.world.enemies.forEach((enemy) => {
+      enemy.move();
+      if (enemy instanceof Boss) {
+        enemy.projectiles.forEach((proj) => proj.move());
+      }
     });
   }
 

@@ -22,6 +22,7 @@ export abstract class Character {
   abstract animation: AnimationPlayer | AnimationEnemie;
   public spritePosition: number = 0;
   public direction: Direction = Direction.right;
+  public maxFrameCount: number = 23;
 
   //Char Stats
   abstract hp: number;
@@ -57,6 +58,7 @@ export abstract class Character {
       this.width,
       this.height
     );
+    this.hitbox.draw();
   }
   abstract setDirection(direction: Direction): void;
 }

@@ -427,3 +427,71 @@ export class SlidingStateLeft implements PlayerState {
     }, this.player.slideCooldownTime * 1000);
   }
 }
+
+export class HurtState implements PlayerState {
+  constructor(private player: Player) {}
+
+  handleInput(input: InputHandler): void {}
+
+  enter() {
+    this.player.animation = AnimationPlayer.hurt;
+    if (this.player.direction === Direction.right) {
+      this.player.spritePosition = 0;
+    } else {
+      this.player.spritePosition = this.player.maxFrameCount;
+    }
+  }
+
+  update() {
+    this.player.velocityX = 0;
+    if (this.player.direction === Direction.right) {
+      if (
+        this.player.spritePosition >
+        SpriteFrameCount[AnimationPlayer.hurt] - 1
+      ) {
+        this.player.setState(new IdleState(this.player));
+      }
+    } else {
+      if (
+        this.player.spritePosition <
+        this.player.maxFrameCount - SpriteFrameCount[AnimationPlayer.hurt] + 1
+      ) {
+        this.player.setState(new IdleState(this.player));
+      }
+    }
+  }
+}
+
+export class DyingState implements PlayerState {
+  constructor(private player: Player) {}
+
+  handleInput(input: InputHandler): void {}
+
+  enter() {
+    this.player.animation = AnimationPlayer.dying;
+    if (this.player.direction === Direction.right) {
+      this.player.spritePosition = 0;
+    } else {
+      this.player.spritePosition = this.player.maxFrameCount;
+    }
+  }
+
+  update() {
+    this.player.velocityX = 0;
+    if (this.player.direction === Direction.right) {
+      if (
+        this.player.spritePosition >
+        SpriteFrameCount[AnimationPlayer.dying] - 1
+      ) {
+        this.player.world.gameOver();
+      }
+    } else {
+      if (
+        this.player.spritePosition <
+        this.player.maxFrameCount - SpriteFrameCount[AnimationPlayer.dying] + 1
+      ) {
+        this.player.world.gameOver();
+      }
+    }
+  }
+}

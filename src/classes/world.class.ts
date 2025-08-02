@@ -6,7 +6,7 @@ import {
   SecondLayer,
   ThirdLayer,
 } from "./background.class";
-import { Boss, Enemie } from "./enemie.class";
+import { Boss, Enemie, Zombie1, Zombie2 } from "./enemie.class";
 import { Player } from "./player.class";
 
 export class World {
@@ -18,7 +18,7 @@ export class World {
   player: Player;
   gravity: number = 1;
   backgrounds: Background[][] = [];
-  enemies: Enemie[] = [new Boss(200, this.groundLevel - 40, this)];
+  enemies: Enemie[] = [];
 
   constructor(
     public canvas: HTMLCanvasElement,
@@ -29,6 +29,11 @@ export class World {
     this.centerScreen = this.width / 2 - 50;
     this.playerStartingX = this.centerScreen;
     this.player = new Player(this.playerStartingX, this.groundLevel, this);
+    this.enemies = [
+      new Boss(200, this.groundLevel - 40, this),
+      new Zombie1(50, this.groundLevel, this),
+      new Zombie2(400, this.groundLevel, this),
+    ];
     this.player.initImgs();
     this.backgrounds = [
       [
@@ -64,6 +69,7 @@ export class World {
     this.player.update();
     this.updateBackgrounds();
     this.updateEnemies();
+    this.killEnemy();
   }
 
   draw() {
@@ -88,7 +94,7 @@ export class World {
   }
 
   updateEnemies() {
-    this.enemies.forEach((enemy) => enemy.update);
+    this.enemies.forEach((enemy) => enemy.update());
   }
 
   drawEnemies() {
@@ -116,4 +122,13 @@ export class World {
       }
     }
   }
+
+  killEnemy() {
+    this.enemies = this.enemies.filter((enemy) => {
+      return !enemy.isDead;
+    });
+  }
+  gameOver() {}
+
+  won() {}
 }
