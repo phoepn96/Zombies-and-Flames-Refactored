@@ -5,6 +5,7 @@ import { InputHandler } from "./inputHandler.class";
 import { Hitbox } from "./hitbox.class";
 import { Projectile } from "./projectile.class";
 import { Boss } from "./enemie.class";
+import { soundManager } from "../main";
 
 export enum AnimationPlayer {
   dying = 0,
@@ -191,6 +192,10 @@ export class Player extends Character {
 
   fireProj() {
     this.projectiles.push(new Projectile(this, this.world.ctx));
+    soundManager.playSound("playerProj");
+    setTimeout(() => {
+      soundManager.stopSound("playerProj");
+    }, 1000);
   }
 
   updateProj() {

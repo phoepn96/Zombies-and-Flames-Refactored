@@ -1,3 +1,4 @@
+import { soundManager } from "../main";
 import { Direction } from "./character.class";
 import {
   AnimationEnemie,
@@ -88,6 +89,8 @@ export class EnemyAttackingState implements EnemyState {
       this.enemy.attackOnCooldown = true;
       if (this.enemy instanceof Boss) {
         this.enemy.fireProj();
+      } else {
+        soundManager.playSound("zombieAttack");
       }
       setTimeout(() => {
         this.enemy.attackOnCooldown = false;

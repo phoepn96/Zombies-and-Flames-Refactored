@@ -1,3 +1,4 @@
+import { soundManager } from "../main";
 import { Character, Direction } from "./character.class";
 import {
   EnemyDyingState,
@@ -54,6 +55,34 @@ export abstract class Enemie extends Character {
     super(startingX, startingY, world);
   }
 
+  canMoveForward(): boolean {
+    for (const other of this.world.enemies) {
+      if (other === this || other.isDead) continue;
+      if (!(other.state instanceof EnemyWalkingState)) continue;
+      const buffer = 5;
+      const futureX =
+        this.direction === Direction.right
+          ? this.x + this.speed + buffer
+          : this.x - this.speed - buffer;
+
+      const overlapY =
+        this.y < other.y + other.height && this.y + this.height > other.y;
+
+      const isRight = this.direction === Direction.right;
+
+      const willOverlap = isRight
+        ? futureX + this.width > other.x && futureX < other.x + other.width
+        : futureX < other.x + other.width && futureX + this.width > other.x;
+
+      const isInFront = isRight ? other.x > this.x : other.x < this.x;
+
+      if (willOverlap && overlapY && isInFront) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   setState(state: EnemyState) {
     this.state = state;
     this.state.enter();
@@ -64,7 +93,9 @@ export abstract class Enemie extends Character {
 
   update() {
     this.state.checkForAction();
-    this.state.update();
+    if (this.canMoveForward()) {
+      this.state.update();
+    }
     this.hitbox.update();
     this.animateSprite();
     this.checkDirection();
@@ -155,11 +186,17 @@ export class Boss extends Enemie {
 
   fireProj() {
     this.projectiles.push(new Projectile(this, this.world.ctx));
+    soundManager.playSound("reaperFlame");
+    setTimeout(() => {
+      soundManager.stopSound("reaperFlame");
+    }, 2000);
   }
 
   update() {
     this.state.checkForAction();
-    this.state.update();
+    if (this.canMoveForward()) {
+      this.state.update();
+    }
     this.hitbox.update();
     this.animateSprite();
     this.checkDirection();

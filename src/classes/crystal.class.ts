@@ -1,4 +1,4 @@
-import { Hitbox } from "./hitbox.class";
+import { soundManager } from "../main";
 import { World } from "./world.class";
 
 export class Crystal {
@@ -54,6 +54,7 @@ export class Crystal {
     ) {
       this.isPickedUp = true;
       this.world.player.crystals++;
+      soundManager.playSound("pickup");
     }
   }
 

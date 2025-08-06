@@ -64,3 +64,15 @@ main {
   width: 200px;
   height: 200px;
 }
+
+.sound {
+  width: 50px;
+  height: 50px;
+}
+
+#soundButton {
+  z-index: 100;
+  grid-column: 3/4;
+  grid-row: 3/4;
+  cursor: pointer;
+}

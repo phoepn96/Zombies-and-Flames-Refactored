@@ -1,3 +1,4 @@
+import { gameOverMenu } from "../main";
 import {
   Background,
   BackgroundLayer,
@@ -78,10 +79,11 @@ export class World {
     this.player.update();
     this.updateBackgrounds();
     this.updateEnemies();
-    this.killEnemy();
+
     this.checkCollisions();
     this.deleteCrystals();
     this.updateCrystals();
+    this.killEnemy();
   }
 
   draw() {
@@ -197,8 +199,9 @@ export class World {
     const playerBottom = p.y + p.height;
     const enemyTop = e.y;
     const isHorizontalCollision = p.x < e.x + e.width && p.x + p.width > e.x;
-    const isVerticalOverlap = playerBottom > enemyTop && p.y < e.y + e.height;
-    const notFromAbove = playerBottom <= enemyTop + 5;
+    const isVerticalOverlap =
+      playerBottom + 20 > enemyTop && p.y < e.y + e.height;
+    const notFromAbove = playerBottom <= enemyTop + 10;
     if (
       isHorizontalCollision &&
       isVerticalOverlap &&
@@ -209,7 +212,10 @@ export class World {
       enemy.setState(new EnemyHurtState(this.player, enemy));
     }
   }
-  gameOver() {}
+
+  gameOver() {
+    gameOverMenu();
+  }
 
   won() {}
 }
