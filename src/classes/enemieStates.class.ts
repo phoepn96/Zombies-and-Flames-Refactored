@@ -175,7 +175,7 @@ export class EnemyDyingState implements EnemyState {
     if (this.enemy.direction === Direction.right) {
       if (
         this.enemy.spritePosition >
-        SpriteFrameCountEnemy[AnimationEnemie.dying] - 2
+        SpriteFrameCountEnemy[AnimationEnemie.dying] - 1
       ) {
         if (this.enemy instanceof Boss) {
           this.enemy.world.won();
@@ -187,13 +187,12 @@ export class EnemyDyingState implements EnemyState {
         this.enemy.spritePosition <
         this.enemy.maxFrameCount -
           SpriteFrameCountEnemy[AnimationEnemie.dying] +
-          2
+          1
       ) {
         if (this.enemy instanceof Boss) {
           this.enemy.world.won();
         }
         this.enemy.isDead = true;
-        console.log("dead");
       }
     }
   }

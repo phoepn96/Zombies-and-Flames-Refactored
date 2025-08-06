@@ -55,34 +55,6 @@ export abstract class Enemie extends Character {
     super(startingX, startingY, world);
   }
 
-  canMoveForward(): boolean {
-    for (const other of this.world.enemies) {
-      if (other === this || other.isDead) continue;
-      if (!(other.state instanceof EnemyWalkingState)) continue;
-      const buffer = 5;
-      const futureX =
-        this.direction === Direction.right
-          ? this.x + this.speed + buffer
-          : this.x - this.speed - buffer;
-
-      const overlapY =
-        this.y < other.y + other.height && this.y + this.height > other.y;
-
-      const isRight = this.direction === Direction.right;
-
-      const willOverlap = isRight
-        ? futureX + this.width > other.x && futureX < other.x + other.width
-        : futureX < other.x + other.width && futureX + this.width > other.x;
-
-      const isInFront = isRight ? other.x > this.x : other.x < this.x;
-
-      if (willOverlap && overlapY && isInFront) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   setState(state: EnemyState) {
     this.state = state;
     this.state.enter();
@@ -93,9 +65,7 @@ export abstract class Enemie extends Character {
 
   update() {
     this.state.checkForAction();
-    if (this.canMoveForward()) {
-      this.state.update();
-    }
+    this.state.update();
     this.hitbox.update();
     this.animateSprite();
     this.checkDirection();
@@ -141,7 +111,7 @@ export abstract class Enemie extends Character {
   }
 
   killSelf() {
-    if (this.hp <= 0) {
+    if (this.hp <= 0 && !(this.state instanceof EnemyDyingState)) {
       this.setState(new EnemyDyingState(this));
     }
   }
@@ -157,7 +127,7 @@ export class Boss extends Enemie {
   protected img: HTMLImageElement = this.imgRight;
 
   //Stats
-  hp: number = 10;
+  hp: number = 5;
   speed: number = 4;
 
   //Animation Stuff
@@ -194,14 +164,13 @@ export class Boss extends Enemie {
 
   update() {
     this.state.checkForAction();
-    if (this.canMoveForward()) {
-      this.state.update();
-    }
+    this.state.update();
     this.hitbox.update();
     this.animateSprite();
     this.checkDirection();
     this.projectiles.forEach((proj) => proj.update());
     this.removeProjectiles();
+    this.killSelf();
   }
 
   draw() {
@@ -233,7 +202,7 @@ abstract class Zombie extends Enemie {
   frameWidth: number = 909.58;
   frameHeight: number = 908.88;
 
-  hp = 4;
+  hp = 2;
   speed: number = 3;
 
   hitboxOffsetX: number = -30;

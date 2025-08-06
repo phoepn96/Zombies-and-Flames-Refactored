@@ -1,5 +1,3 @@
-import { localMute } from "../main";
-
 export class SoundManager {
   private sounds: Map<string, HTMLAudioElement> = new Map();
   muted: boolean = false;

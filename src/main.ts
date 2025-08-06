@@ -2,8 +2,6 @@ import { SoundManager } from "./classes/soundManager.class";
 import { audioTemp, gameOverTemp, muteTemp } from "./classes/templates";
 import { World } from "./classes/world.class";
 
-export const localMute: boolean = false;
-
 const menu: HTMLDivElement = document.getElementById(
   "gameMenu"
 ) as HTMLDivElement;
