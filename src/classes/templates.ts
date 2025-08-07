@@ -15,7 +15,7 @@ export function wonTemp() {
 export function muteTemp() {
   return ` <img
           class="sound"
-          src="/assets/spritesheets/bg/mute.png"
+          src="assets/spritesheets/bg/mute.png"
           alt="Sound"
         />`;
 }
@@ -23,7 +23,7 @@ export function muteTemp() {
 export function audioTemp() {
   return ` <img
           class="sound"
-          src="/assets/spritesheets/bg/audio.png"
+          src="assets/spritesheets/bg/audio.png"
           alt="Sound"
         />`;
 }
@@ -123,13 +123,13 @@ export function normalMenuTemp() {
       <img
         id="logo"
         alt="zombies and flames"
-        src="/assets/spritesheets/bg/logo.png"
+        src="assets/spritesheets/bg/logo.png"
       />
       <button class="menu big" id="startGame">Spielen</button>
       <div id="soundButton">
         <img
           class="sound"
-          src="/assets/spritesheets/bg/audio.png"
+          src="assets/spritesheets/bg/audio.png"
           alt="Sound"
         />
       </div>`;

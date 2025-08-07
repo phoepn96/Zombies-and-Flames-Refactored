@@ -85,6 +85,7 @@ function gameLoop(timestamp: number): void {
 }
 
 async function startGame(): Promise<void> {
+  await loadImages();
   world = new World(canvas, ctx);
   requestAnimationFrame(gameLoop);
 }
@@ -114,7 +115,7 @@ export function gameOverMenu() {
     menu.innerHTML = gameOverTemp();
     playAgainListener();
     soundManager.stopAllSounds();
-  }, 5000);
+  }, 3000);
 }
 
 export function youWon() {
@@ -126,7 +127,7 @@ export function youWon() {
     menu.innerHTML = wonTemp();
     playAgainListener();
     soundManager.stopAllSounds();
-  }, 5000);
+  }, 3000);
 }
 
 function playAgainListener() {
@@ -173,7 +174,6 @@ function addListeners() {
   });
   controlsBtn.addEventListener("click", () => {
     menu.innerHTML = controlTemp();
-    console.log("test");
     addBackListener();
   });
 }
@@ -183,16 +183,10 @@ function addBackListener() {
     "backBtn"
   ) as HTMLButtonElement;
   backBtn.addEventListener("click", () => {
-    console.log("test2");
     menu.innerHTML = normalMenuTemp();
     addListeners();
   });
 }
-
-addListeners();
-window.addEventListener("load", () => {
-  loadImages();
-});
 
 function checkOrientation() {
   const rotateScreen = document.getElementById("rotate-screen");
@@ -215,3 +209,5 @@ window.addEventListener("resize", () => {
     mobileControls?.classList.add("hide");
   }
 });
+
+window.addEventListener("load", addListeners);

@@ -115,8 +115,8 @@ export class Boss extends Enemie {
   speed: number = 4;
 
   //Animation Stuff
-  frameWidth: number = 909.58;
-  frameHeight: number = 908.88;
+  frameWidth: number = 80;
+  frameHeight: number = 80;
   animation: AnimationEnemie = AnimationEnemie.walking;
   //Hitbox etc..
   projectiles: Projectile[] = [];
@@ -186,8 +186,8 @@ abstract class Zombie extends Enemie {
   width: number = 100;
   height: number = 100;
 
-  frameWidth: number = 909.58;
-  frameHeight: number = 908.88;
+  frameWidth: number = 80;
+  frameHeight: number = 80;
 
   hp = 2;
   speed: number = 3;

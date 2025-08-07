@@ -47,8 +47,8 @@ export class Projectile {
       this.imgLeft = imageCache["playerProjLeft"];
       this.imgRight = imageCache["playerProjRight"];
       this.spriteRow = 0;
-      this.spriteWidth = 1660;
-      this.spriteHeight = 1070;
+      this.spriteWidth = 46.8;
+      this.spriteHeight = 30;
       this.origin = "player";
       this.projectileSizeHeight = 100;
       this.projectileSizeWidth = 150;
@@ -59,8 +59,8 @@ export class Projectile {
     } else {
       this.img = imageCache["bossProj"];
       this.spriteRow = 0;
-      this.spriteWidth = 339;
-      this.spriteHeight = 404;
+      this.spriteWidth = 36.25;
+      this.spriteHeight = 43;
       this.projectileSizeHeight = 100;
       this.projectileSizeWidth = 80;
       this.hitboxOffsetX = -15;

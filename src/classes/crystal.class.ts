@@ -1,11 +1,10 @@
 import { soundManager } from "../main";
+import { imageCache } from "./imageCache";
 import { World } from "./world.class";
 
 export class Crystal {
   constructor(public x: number, public y: number, public world: World) {}
-  img: HTMLImageElement = document.getElementById(
-    "crystals"
-  ) as HTMLImageElement;
+  img: HTMLImageElement = imageCache["crystals"];
   frameWidth: number = 512;
   frameHeight: number = 512;
   width: number = 50;

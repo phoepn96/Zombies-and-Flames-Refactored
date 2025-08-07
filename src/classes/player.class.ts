@@ -46,8 +46,8 @@ export class Player extends Character {
 
   //Animation Values
   public animation: AnimationPlayer = AnimationPlayer.idle;
-  frameWidth: number = 909.16;
-  frameHeight: number = 909.16;
+  frameWidth: number = 80;
+  frameHeight: number = 80;
   maxFrameCount: number = 23;
 
   //Char stats
@@ -74,12 +74,8 @@ export class Player extends Character {
   hitboxOffsetWidth: number = -50;
   hitboxOffsetHeight: number = -30;
   public projectiles: Projectile[] = [];
-  public lifebar: HTMLImageElement = document.getElementById(
-    "lifebar"
-  ) as HTMLImageElement;
-  public crystal: HTMLImageElement = document.getElementById(
-    "crystals"
-  ) as HTMLImageElement;
+  public lifebar!: HTMLImageElement;
+  public crystal!: HTMLImageElement;
 
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
@@ -92,6 +88,8 @@ export class Player extends Character {
       this.hitboxOffsetWidth,
       this.hitboxOffsetHeight
     );
+    this.lifebar = imageCache["lifebar"];
+    this.crystal = imageCache["crystals"];
   }
 
   initImgs() {
@@ -180,7 +178,6 @@ export class Player extends Character {
   checkDead() {
     if (this.hp <= 0) {
       this.hp = 0;
-      console.log(this.state);
       if (this.state instanceof DyingState) return;
       this.setState(new DyingState(this));
     }
