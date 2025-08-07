@@ -1,8 +1,11 @@
-import { Hitbox } from "./hitbox.class";
-import { AnimationPlayer } from "./player.class";
-import { World } from "./world.class";
-import { AnimationEnemie } from "./enemie.class";
+import { Hitbox } from './hitbox.class';
+import { AnimationPlayer } from './player.class';
+import { World } from './world.class';
+import { AnimationEnemie } from './enemie.class';
 
+/**
+ * Thats the super class for all Characters in game and definies their must have values, like x and y corrdinates, images, hitboxes etc. Furthermore every char must have a update, a setDirection and a draw method
+ */
 export abstract class Character {
   //Draw Values
   public world: World;
@@ -63,6 +66,6 @@ export abstract class Character {
 }
 
 export enum Direction {
-  left = "left",
-  right = "right",
+  left = 'left',
+  right = 'right',
 }

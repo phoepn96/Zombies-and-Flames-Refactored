@@ -1,15 +1,14 @@
-import { imageCache } from "./imageCache";
-import { soundManager } from "../main";
-import { Character, Direction } from "./character.class";
-import {
-  EnemyDyingState,
-  EnemyState,
-  EnemyWalkingState,
-} from "./enemieStates.class";
-import { Hitbox } from "./hitbox.class";
-import { Projectile } from "./projectile.class";
-import { World } from "./world.class";
+import { imageCache } from './imageCache';
+import { soundManager } from '../main';
+import { Character, Direction } from './character.class';
+import { EnemyDyingState, EnemyState, EnemyWalkingState } from './enemieStates.class';
+import { Hitbox } from './hitbox.class';
+import { Projectile } from './projectile.class';
+import { World } from './world.class';
 
+/**
+ * enum for the Y coordinates of the spritesheet, for better readebility
+ */
 export enum AnimationEnemie {
   dying = 0,
   hurt = 2,
@@ -18,6 +17,9 @@ export enum AnimationEnemie {
   slashing = 8,
 }
 
+/**
+ * Record for the enum above, that matches the X frames for the corrosponding Y Frame
+ */
 export const SpriteFrameCountEnemy: Record<AnimationEnemie, number> = {
   [AnimationEnemie.dying]: 16,
   [AnimationEnemie.hurt]: 11,
@@ -26,6 +28,9 @@ export const SpriteFrameCountEnemy: Record<AnimationEnemie, number> = {
   [AnimationEnemie.idle]: 17,
 };
 
+/**
+ * super class for all enemies in game, extends the character superclass
+ */
 export abstract class Enemie extends Character {
   projectileSpeed: number = 0;
   attackCooldownTime: number = 3;
@@ -39,14 +44,28 @@ export abstract class Enemie extends Character {
     super(startingX, startingY, world);
   }
 
+  /**
+   * Sets the state of the enemie instance to a new state and triggers the enter method of that state
+   *
+   * @param state a state which implements the EnemyState interface
+   */
   setState(state: EnemyState) {
     this.state = state;
     this.state.enter();
   }
+
+  /**
+   * sets the direction of an enemie to a new direction
+   *
+   * @param direction Enum its either left or right
+   */
   setDirection(direction: Direction): void {
     this.direction = direction;
   }
 
+  /**
+   * updates the enemy instance by refreshing the state logic, updating the hitbox, animationg the spritesheet, checking direction, and watching for the hp of the instance
+   */
   update() {
     this.state.checkForAction();
     this.state.update();
@@ -56,6 +75,9 @@ export abstract class Enemie extends Character {
     this.killSelf();
   }
 
+  /**
+   * watchers where the player is and moves in the direction of the player, with liddle tweaks to support the parallax nature of the game
+   */
   move() {
     if (
       (this.direction === Direction.right &&
@@ -71,6 +93,9 @@ export abstract class Enemie extends Character {
     }
   }
 
+  /**
+   * checks the direction of the instance and gives the right spritesheet
+   */
   checkDirection() {
     if (this.direction === Direction.right) {
       this.img = this.imgRight;
@@ -79,21 +104,23 @@ export abstract class Enemie extends Character {
     }
   }
 
+  /**
+   * animates the spritesheet
+   */
   animateSprite() {
     if (this.direction === Direction.right) {
-      if (this.spritePosition > SpriteFrameCountEnemy[this.animation] - 1)
-        this.spritePosition = -1;
+      if (this.spritePosition > SpriteFrameCountEnemy[this.animation] - 1) this.spritePosition = -1;
       this.spritePosition++;
     } else {
-      if (
-        this.spritePosition <
-        this.maxFrameCount - SpriteFrameCountEnemy[this.animation] + 1
-      )
+      if (this.spritePosition < this.maxFrameCount - SpriteFrameCountEnemy[this.animation] + 1)
         this.spritePosition = this.maxFrameCount + 1;
       this.spritePosition--;
     }
   }
 
+  /**
+   * watches the hp of the instance and sets the dying state if hp = 0
+   */
   killSelf() {
     if (this.hp <= 0 && !(this.state instanceof EnemyDyingState)) {
       this.setState(new EnemyDyingState(this));
@@ -101,6 +128,9 @@ export abstract class Enemie extends Character {
   }
 }
 
+/**
+ * class for the boss encounter of the game
+ */
 export class Boss extends Enemie {
   width: number = 150;
   height: number = 150;
@@ -136,19 +166,25 @@ export class Boss extends Enemie {
 
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
-    this.imgRight = imageCache["bossRight"];
-    this.imgLeft = imageCache["bossLeft"];
+    this.imgRight = imageCache['bossRight'];
+    this.imgLeft = imageCache['bossLeft'];
     this.img = this.imgRight;
   }
 
+  /**
+   * adds a projectile to theproj array of the instance and plays a sound
+   */
   fireProj() {
     this.projectiles.push(new Projectile(this, this.world.ctx));
-    soundManager.playSound("reaperFlame");
+    soundManager.playSound('reaperFlame');
     setTimeout(() => {
-      soundManager.stopSound("reaperFlame");
+      soundManager.stopSound('reaperFlame');
     }, 2000);
   }
 
+  /**
+   * updates the instance by updating state, hitbox, animation, direction, all projectiles in the proj array of the instance, watches which projectiles can be deleted and watches the hp of the instance
+   */
   update() {
     this.state.checkForAction();
     this.state.update();
@@ -160,6 +196,9 @@ export class Boss extends Enemie {
     this.killSelf();
   }
 
+  /**
+   * draws the instance and all of its projectiles on the canvas
+   */
   draw() {
     this.projectiles.forEach((proj) => proj.draw());
     this.world.ctx.drawImage(
@@ -175,6 +214,9 @@ export class Boss extends Enemie {
     );
   }
 
+  /**
+   * removes specific projectiles by filtering all prijectiles out, which met requirments like leaving the viewport or colliding
+   */
   removeProjectiles() {
     this.projectiles = this.projectiles.filter((projectile) => {
       return !projectile.removeProj;
@@ -182,6 +224,9 @@ export class Boss extends Enemie {
   }
 }
 
+/**
+ * super class for the zombie instances which extent the Enemie superclass
+ */
 abstract class Zombie extends Enemie {
   width: number = 100;
   height: number = 100;
@@ -213,20 +258,26 @@ abstract class Zombie extends Enemie {
   }
 }
 
+/**
+ * class for a liddle zombie
+ */
 export class Zombie1 extends Zombie {
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
-    this.imgRight = imageCache["zombie2Right"];
-    this.imgLeft = imageCache["zombie1Left"];
+    this.imgRight = imageCache['zombie1Right'];
+    this.imgLeft = imageCache['zombie1Left'];
     this.img = this.imgRight;
   }
 }
 
+/**
+ * the other liddle zombie
+ */
 export class Zombie2 extends Zombie {
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
-    this.imgRight = imageCache["zombie2Right"];
-    this.imgLeft = imageCache["zombie2Left"];
+    this.imgRight = imageCache['zombie2Right'];
+    this.imgLeft = imageCache['zombie2Left'];
     this.img = this.imgRight;
   }
 }

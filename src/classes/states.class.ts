@@ -1,8 +1,11 @@
-import { Direction } from "./character.class";
-import { Player } from "./player.class";
-import { InputHandler } from "./inputHandler.class";
-import { EnemyIdleState } from "./enemieStates.class";
+import { Direction } from './character.class';
+import { Player } from './player.class';
+import { InputHandler } from './inputHandler.class';
+import { EnemyIdleState } from './enemieStates.class';
 
+/**
+ * interface for all the playerstates, enter always sets the correct animation of the player, handle input always checks for the current inputs of the input handler and sets the states of the player
+ */
 export interface PlayerState {
   handleInput(input: InputHandler): void;
   enter(): void;
@@ -39,17 +42,17 @@ export class IdleState implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.keyManager["d"] || input.keyManager["arrowright"]) {
+    if (input.keyManager['d'] || input.keyManager['arrowright']) {
       this.player.setState(new RunningStateRight(this.player));
       this.player.setDirection(Direction.right);
-    } else if (input.keyManager["a"] || input.keyManager["arrowleft"]) {
+    } else if (input.keyManager['a'] || input.keyManager['arrowleft']) {
       this.player.setState(new RunningStateLeft(this.player));
       this.player.setDirection(Direction.left);
-    } else if (input.keyManager[" "]) {
+    } else if (input.keyManager[' ']) {
       this.player.setState(new JumpingStateStart(this.player));
-    } else if (input.keyManager["f"]) {
+    } else if (input.keyManager['f']) {
       this.player.setState(new AttackingStateGround(this.player));
-    } else if (input.keyManager["control"] && !this.player.slideOnCooldown) {
+    } else if (input.keyManager['control'] && !this.player.slideOnCooldown) {
       if (this.player.direction === Direction.right) {
         this.player.setState(new SlidingStateRight(this.player));
       } else if (this.player.direction === Direction.left) {
@@ -79,14 +82,14 @@ export class RunningStateRight implements PlayerState {
   handleInput(input: InputHandler): void {
     if (input.isIdle && this.player.isOnGround()) {
       this.player.setState(new IdleState(this.player));
-    } else if (input.keyManager["a"] || input.keyManager["arrowleft"]) {
+    } else if (input.keyManager['a'] || input.keyManager['arrowleft']) {
       this.player.setState(new RunningStateLeft(this.player));
       this.player.setDirection(Direction.left);
-    } else if (input.keyManager[" "]) {
+    } else if (input.keyManager[' ']) {
       this.player.setState(new JumpingStateStart(this.player));
-    } else if (input.keyManager["f"]) {
+    } else if (input.keyManager['f']) {
       this.player.setState(new AttackingStateGround(this.player));
-    } else if (input.keyManager["control"] && !this.player.slideOnCooldown) {
+    } else if (input.keyManager['control'] && !this.player.slideOnCooldown) {
       this.player.setState(new SlidingStateRight(this.player));
     }
   }
@@ -106,14 +109,14 @@ export class RunningStateLeft implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.keyManager["d"] || input.keyManager["arrowright"]) {
+    if (input.keyManager['d'] || input.keyManager['arrowright']) {
       this.player.setState(new RunningStateRight(this.player));
       this.player.setDirection(Direction.right);
-    } else if (input.keyManager[" "]) {
+    } else if (input.keyManager[' ']) {
       this.player.setState(new JumpingStateStart(this.player));
-    } else if (input.keyManager["f"]) {
+    } else if (input.keyManager['f']) {
       this.player.setState(new AttackingStateGround(this.player));
-    } else if (input.keyManager["control"] && !this.player.slideOnCooldown) {
+    } else if (input.keyManager['control'] && !this.player.slideOnCooldown) {
       this.player.setState(new SlidingStateLeft(this.player));
     } else if (input.isIdle && this.player.isOnGround()) {
       this.player.setState(new IdleState(this.player));
@@ -135,19 +138,19 @@ export class JumpingStateStart implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.keyManager["d"] || input.keyManager["arrowright"]) {
+    if (input.keyManager['d'] || input.keyManager['arrowright']) {
       this.player.direction = Direction.right;
       this.player.velocityX = this.player.speed;
-    } else if (input.keyManager["a"] || input.keyManager["arrowleft"]) {
+    } else if (input.keyManager['a'] || input.keyManager['arrowleft']) {
       this.player.direction = Direction.left;
       this.player.velocityX = -this.player.speed;
-    } else if (input.keyManager["control"] && !this.player.slideOnCooldown) {
+    } else if (input.keyManager['control'] && !this.player.slideOnCooldown) {
       if (this.player.direction === Direction.right) {
         this.player.setState(new SlidingStateRight(this.player));
       } else if (this.player.direction === Direction.left) {
         this.player.setState(new SlidingStateLeft(this.player));
       }
-    } else if (input.keyManager["f"]) {
+    } else if (input.keyManager['f']) {
       if (this.player.direction === Direction.right)
         this.player.setState(new AttackingStateAir(this.player));
     } else if (input.isIdle && this.player.isOnGround()) {
@@ -167,18 +170,13 @@ export class JumpingStateStart implements PlayerState {
 
   update(): void {
     if (this.player.direction === Direction.right) {
-      if (
-        this.player.spritePosition >
-        SpriteFrameCount[AnimationPlayer.jumpstart] - 1
-      ) {
+      if (this.player.spritePosition > SpriteFrameCount[AnimationPlayer.jumpstart] - 1) {
         this.player.setState(new JumpingStateAscending(this.player));
       }
     } else {
       if (
         this.player.spritePosition <
-        this.player.maxFrameCount -
-          SpriteFrameCount[AnimationPlayer.jumpstart] +
-          1
+        this.player.maxFrameCount - SpriteFrameCount[AnimationPlayer.jumpstart] + 1
       ) {
         this.player.setState(new JumpingStateAscending(this.player));
       }
@@ -190,18 +188,18 @@ export class JumpingStateAscending implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.keyManager["d"]) {
+    if (input.keyManager['d']) {
       this.player.direction = Direction.right;
       this.player.velocityX = this.player.speed;
-    } else if (input.keyManager["a"]) {
+    } else if (input.keyManager['a']) {
       this.player.direction = Direction.left;
       this.player.velocityX = -this.player.speed;
     }
 
-    if (input.keyManager["f"]) {
+    if (input.keyManager['f']) {
       this.player.setState(new AttackingStateAir(this.player));
     }
-    if (input.keyManager["control"] && !this.player.slideOnCooldown) {
+    if (input.keyManager['control'] && !this.player.slideOnCooldown) {
       if (this.player.direction === Direction.right) {
         this.player.setState(new SlidingStateRight(this.player));
       } else if (this.player.direction === Direction.left) {
@@ -232,18 +230,18 @@ export class JumpingStateDescending implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.keyManager["d"]) {
+    if (input.keyManager['d']) {
       this.player.direction = Direction.right;
       this.player.velocityX = this.player.speed;
-    } else if (input.keyManager["a"]) {
+    } else if (input.keyManager['a']) {
       this.player.direction = Direction.left;
       this.player.velocityX = -this.player.speed;
     }
 
-    if (input.keyManager["f"]) {
+    if (input.keyManager['f']) {
       this.player.setState(new AttackingStateAir(this.player));
     }
-    if (input.keyManager["control"] && !this.player.slideOnCooldown) {
+    if (input.keyManager['control'] && !this.player.slideOnCooldown) {
       if (this.player.direction === Direction.right) {
         this.player.setState(new SlidingStateRight(this.player));
       } else if (this.player.direction === Direction.left) {
@@ -291,10 +289,7 @@ export class AttackingStateGround implements PlayerState {
   update() {
     if (this.player.direction === Direction.right) {
       this.player.velocityX = -this.player.speed / 2;
-      if (
-        this.player.spritePosition >
-        SpriteFrameCount[AnimationPlayer.slashing] - 1
-      ) {
+      if (this.player.spritePosition > SpriteFrameCount[AnimationPlayer.slashing] - 1) {
         this.player.fireProj();
         this.player.setState(new IdleState(this.player));
       }
@@ -302,9 +297,7 @@ export class AttackingStateGround implements PlayerState {
       this.player.velocityX = this.player.speed / 2;
       if (
         this.player.spritePosition <
-        this.player.maxFrameCount -
-          SpriteFrameCount[AnimationPlayer.slashing] +
-          1
+        this.player.maxFrameCount - SpriteFrameCount[AnimationPlayer.slashing] + 1
       ) {
         this.player.fireProj();
         this.player.setState(new IdleState(this.player));
@@ -332,10 +325,7 @@ export class AttackingStateAir implements PlayerState {
   update() {
     if (this.player.direction === Direction.right) {
       this.player.velocityX = -this.player.speed / 2;
-      if (
-        this.player.spritePosition >
-        SpriteFrameCount[AnimationPlayer.slashingAir] - 1
-      ) {
+      if (this.player.spritePosition > SpriteFrameCount[AnimationPlayer.slashingAir] - 1) {
         this.player.fireProj();
         if (this.player.isOnGround()) {
           this.player.setState(new IdleState(this.player));
@@ -347,9 +337,7 @@ export class AttackingStateAir implements PlayerState {
       this.player.velocityX = this.player.speed / 2;
       if (
         this.player.spritePosition <
-        this.player.maxFrameCount -
-          SpriteFrameCount[AnimationPlayer.slashingAir] +
-          1
+        this.player.maxFrameCount - SpriteFrameCount[AnimationPlayer.slashingAir] + 1
       ) {
         this.player.fireProj();
         if (this.player.isOnGround()) {
@@ -378,10 +366,7 @@ export class SlidingStateRight implements PlayerState {
       return;
     }
     this.player.velocityX = this.player.dashSpeed;
-    if (
-      this.player.spritePosition >
-      SpriteFrameCount[AnimationPlayer.sliding] - 1
-    ) {
+    if (this.player.spritePosition > SpriteFrameCount[AnimationPlayer.sliding] - 1) {
       this.player.crystals--;
       this.setSlideOnCooldown();
       if (this.player.isOnGround()) {
@@ -464,10 +449,7 @@ export class HurtState implements PlayerState {
   update() {
     this.player.velocityX = 0;
     if (this.player.direction === Direction.right) {
-      if (
-        this.player.spritePosition >
-        SpriteFrameCount[AnimationPlayer.hurt] - 1
-      ) {
+      if (this.player.spritePosition > SpriteFrameCount[AnimationPlayer.hurt] - 1) {
         this.player.setState(new IdleState(this.player));
       }
     } else {
@@ -501,10 +483,7 @@ export class DyingState implements PlayerState {
   update() {
     this.player.velocityX = 0;
     if (this.player.direction === Direction.right) {
-      if (
-        this.player.spritePosition >
-        SpriteFrameCount[AnimationPlayer.dying] - 1
-      ) {
+      if (this.player.spritePosition > SpriteFrameCount[AnimationPlayer.dying] - 1) {
         this.player.world.gameOver();
       }
     } else {

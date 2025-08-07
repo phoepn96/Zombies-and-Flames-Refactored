@@ -1,13 +1,16 @@
-import { imageCache } from "./imageCache";
-import { Character, Direction } from "./character.class";
-import { DyingState, IdleState, PlayerState } from "./states.class";
-import { World } from "./world.class";
-import { InputHandler } from "./inputHandler.class";
-import { Hitbox } from "./hitbox.class";
-import { Projectile } from "./projectile.class";
-import { Boss } from "./enemie.class";
-import { soundManager } from "../main";
+import { imageCache } from './imageCache';
+import { Character, Direction } from './character.class';
+import { DyingState, IdleState, PlayerState } from './states.class';
+import { World } from './world.class';
+import { InputHandler } from './inputHandler.class';
+import { Hitbox } from './hitbox.class';
+import { Projectile } from './projectile.class';
+import { Boss } from './enemie.class';
+import { soundManager } from '../main';
 
+/**
+ * Enum for the yFrame for the spritesheet
+ */
 export enum AnimationPlayer {
   dying = 0,
   descending = 1,
@@ -21,6 +24,9 @@ export enum AnimationPlayer {
   sliding = 11,
 }
 
+/**
+ * Record for the maxFrame of the corrosponding animation
+ */
 export const SpriteFrameCount: Record<AnimationPlayer, number> = {
   [AnimationPlayer.dying]: 14,
   [AnimationPlayer.descending]: 5,
@@ -34,6 +40,9 @@ export const SpriteFrameCount: Record<AnimationPlayer, number> = {
   [AnimationPlayer.sliding]: 5,
 };
 
+/**
+ * the player class
+ */
 export class Player extends Character {
   //Draw Values
   width: number = 100;
@@ -88,21 +97,32 @@ export class Player extends Character {
       this.hitboxOffsetWidth,
       this.hitboxOffsetHeight
     );
-    this.lifebar = imageCache["lifebar"];
-    this.crystal = imageCache["crystals"];
+    this.lifebar = imageCache['lifebar'];
+    this.crystal = imageCache['crystals'];
   }
 
+  /**
+   * inits the imgs of the player
+   */
   initImgs() {
-    this.imgLeft = imageCache["playerRight"];
-    this.imgRight = imageCache["playerLeft"];
+    this.imgLeft = imageCache['playerRight'];
+    this.imgRight = imageCache['playerLeft'];
     this.img = this.imgRight;
   }
 
+  /**
+   * sets the state of the player to a new state and triggers the enter method of that state
+   *
+   * @param state the valid Playerstate
+   */
   setState(state: PlayerState) {
     this.state = state;
     this.state.enter();
   }
 
+  /**
+   * updates the player by watching for the state, setting the correct img, applying gravity, animatin the sprite, updaten all projectiles of the player, the hitbox removing projectiles watching for hp
+   */
   update(): void {
     this.state.handleInput(this.inputHandler);
     this.state.update();
@@ -118,6 +138,9 @@ export class Player extends Character {
     this.checkDead();
   }
 
+  /**
+   * draws the player on the canvas
+   */
   draw(): void {
     this.world.ctx.drawImage(
       this.img,
@@ -134,6 +157,9 @@ export class Player extends Character {
     this.drawLifebarAndCrystals();
   }
 
+  /**
+   * sets the img of the player to the correct sprtesheet
+   */
   setImage() {
     if (this.direction === Direction.right) {
       this.img = this.imgRight;
@@ -142,6 +168,9 @@ export class Player extends Character {
     }
   }
 
+  /**
+   * moves the background and all other objects instead of the player for a parallax effect
+   */
   move() {
     this.world.backgrounds.forEach((backgroundLayerArr) => {
       backgroundLayerArr.forEach((background) => {
@@ -159,14 +188,27 @@ export class Player extends Character {
     });
   }
 
+  /**
+   * checks if the player is on ground
+   *
+   * @returns a boolean
+   */
   isOnGround(): boolean {
     return this.y >= this.world.groundLevel;
   }
 
+  /**
+   * changes the direction of the player
+   *
+   * @param direction Enum either left or right
+   */
   setDirection(direction: Direction): void {
     this.direction = direction;
   }
 
+  /**
+   * aplys gravity while the player is above ground level
+   */
   applyGravity() {
     if (this.isOnGround()) {
       this.y = this.world.groundLevel;
@@ -175,6 +217,11 @@ export class Player extends Character {
     }
   }
 
+  /**
+   * checks if the player has 0 hp or less and if so turn the player in the dying state
+   *
+   * @returns nothing
+   */
   checkDead() {
     if (this.hp <= 0) {
       this.hp = 0;
@@ -183,6 +230,11 @@ export class Player extends Character {
     }
   }
 
+  /**
+   * animates the spritesheet
+   *
+   * @returns nothing
+   */
   animateSprite() {
     if (this.direction === Direction.right) {
       if (this.spritePosition > SpriteFrameCount[this.animation] - 1) {
@@ -192,10 +244,7 @@ export class Player extends Character {
 
       this.spritePosition++;
     } else {
-      if (
-        this.spritePosition <
-        this.maxFrameCount - SpriteFrameCount[this.animation] + 1
-      ) {
+      if (this.spritePosition < this.maxFrameCount - SpriteFrameCount[this.animation] + 1) {
         if (this.state instanceof DyingState) return;
         this.spritePosition = this.maxFrameCount + 1;
       }
@@ -204,38 +253,56 @@ export class Player extends Character {
     }
   }
 
+  /**
+   * pushes a projectile into the proj array and plays a sound
+   */
   fireProj() {
     this.projectiles.push(new Projectile(this, this.world.ctx));
-    soundManager.playSound("playerProj");
+    soundManager.playSound('playerProj');
     setTimeout(() => {
-      soundManager.stopSound("playerProj");
+      soundManager.stopSound('playerProj');
     }, 1000);
   }
 
+  /**
+   * updates all player projectiles
+   */
   updateProj() {
     this.projectiles.forEach((proj) => {
       proj.update();
     });
   }
 
+  /**
+   * draws all player projectiles
+   */
   drawProj() {
     this.projectiles.forEach((proj) => proj.draw());
   }
 
+  /**
+   * removes all player proj which meet the remove Proj criteria by filtering
+   */
   removeProjectiles() {
     this.projectiles = this.projectiles.filter((projectile) => {
       return !projectile.removeProj;
     });
   }
 
+  /**
+   * draws the lifebar and the crystalbar of the player
+   */
   drawLifebarAndCrystals() {
     this.world.ctx.drawImage(this.lifebar, 50, 50, 75, 75);
-    this.world.ctx.fillStyle = "white";
+    this.world.ctx.fillStyle = 'white';
     this.world.ctx.fillText(this.hp.toString(), 84, 90);
     this.world.ctx.drawImage(this.crystal, 0, 0, 512, 512, 580, 50, 75, 75);
     this.world.ctx.fillText(this.crystals.toString(), 617, 95);
   }
 
+  /**
+   * resets the player to groundlevel if dipped below
+   */
   resetGround() {
     if (this.y > this.world.groundLevel) {
       this.y = this.world.groundLevel;

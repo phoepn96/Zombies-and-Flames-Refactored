@@ -12,8 +12,8 @@ body {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("/assets/spritesheets/bg/indexBg.png");
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  background-image: url('/assets/spritesheets/bg/indexBg.png');
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   position: relative;
 }
 
@@ -26,11 +26,10 @@ canvas {
 }
 
 main {
-  align-items: center;
   width: 720px;
   height: 480px;
   z-index: 100;
-  background-image: url("/assets/spritesheets/bg/menuBg.png");
+  background-image: url('/assets/spritesheets/bg/menuBg.png');
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-columns: 1fr 1fr 1fr;
@@ -85,7 +84,6 @@ main {
   width: 720px;
   height: 480px;
   overflow-y: auto;
-  padding-inline: 20px;
 }
 
 .impressum {
@@ -134,7 +132,6 @@ main {
   width: 720px;
   height: 480px;
   overflow-y: auto;
-  padding-inline: 20px;
 }
 
 .backToMenuBtn {
@@ -150,7 +147,6 @@ main {
   width: 720px;
   height: 480px;
   overflow-y: auto;
-  padding-inline: 20px;
   color: white;
   display: flex;
   justify-content: center;
@@ -217,12 +213,35 @@ main {
 #mobile-controls {
   position: absolute;
   bottom: 50px;
-  left: 15%;
-  transform: translateX(-50%);
   z-index: 200;
   display: flex;
-  gap: 10px;
   opacity: 0.3;
+  width: 100%;
+}
+
+#btn-left {
+  position: absolute;
+  left: 15%;
+}
+
+#btn-right {
+  position: absolute;
+  right: 15%;
+}
+
+#btn-jump {
+  position: absolute;
+  right: 20%;
+}
+
+#btn-fire {
+  position: absolute;
+  left: 20%;
+}
+
+#btn-dash {
+  position: absolute;
+  left: 25%;
 }
 
 #mobile-controls button {
@@ -257,8 +276,9 @@ main {
 
   .menu,
   .backToMenuBtn {
-    width: 150px;
+    width: 100px;
     height: 40px;
+    margin-top: 10px;
   }
 
   #mobile-controls button {

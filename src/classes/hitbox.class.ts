@@ -1,7 +1,10 @@
-import { Character } from "./character.class";
-import { Projectile } from "./projectile.class";
-import { World } from "./world.class";
+import { Character } from './character.class';
+import { Projectile } from './projectile.class';
+import { World } from './world.class';
 
+/**
+ * The hitbox of all objects which need to collide
+ */
 export class Hitbox {
   x!: number;
   y!: number;

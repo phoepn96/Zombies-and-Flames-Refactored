@@ -45,7 +45,7 @@ export function impressumTemp() {
       <h2 class="impressum__heading">Kontakt</h2>
       <p class="impressum__text">
         E-Mail: <a href="mailto:patrick-hoepner@outlook.de" class="impressum__link">patrick-hoepner@outlook.de</a><br>
-        Telefon: 0152 53614955
+        Telefon: 015253614955
       </p>
     </section>
 

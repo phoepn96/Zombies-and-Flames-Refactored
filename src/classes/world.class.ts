@@ -1,4 +1,4 @@
-import { gameOverMenu } from "../main";
+import { gameOverMenu } from '../main';
 import {
   Background,
   BackgroundLayer,
@@ -6,17 +6,16 @@ import {
   ForthLayer,
   SecondLayer,
   ThirdLayer,
-} from "./background.class";
-import { Crystal } from "./crystal.class";
-import { Boss, Enemie, Zombie1, Zombie2 } from "./enemie.class";
-import { EnemyHurtState } from "./enemieStates.class";
-import { Player } from "./player.class";
-import {
-  HurtState,
-  JumpingStateAscending,
-  JumpingStateDescending,
-} from "./states.class";
+} from './background.class';
+import { Crystal } from './crystal.class';
+import { Boss, Enemie, Zombie1, Zombie2 } from './enemie.class';
+import { EnemyHurtState } from './enemieStates.class';
+import { Player } from './player.class';
+import { HurtState, JumpingStateAscending } from './states.class';
 
+/**
+ * the world class, which manges all objects of the game
+ */
 export class World {
   width: number;
   height: number;
@@ -51,52 +50,46 @@ export class World {
       new Zombie2(2500, this.groundLevel, this),
     ];
     this.crystals = [
-      new Crystal(200, this.groundLevel + 30, this),
-      new Crystal(400, this.groundLevel + 30, this),
-      new Crystal(50, this.groundLevel + 30, this),
+      new Crystal(1500, this.groundLevel + 30, this),
+      new Crystal(1000, this.groundLevel + 30, this),
+      new Crystal(500, this.groundLevel + 30, this),
+      new Crystal(2500, this.groundLevel + 30, this),
+      new Crystal(2000, this.groundLevel + 30, this),
+      new Crystal(3000, this.groundLevel + 30, this),
+      new Crystal(-1500, this.groundLevel + 30, this),
+      new Crystal(-1000, this.groundLevel + 30, this),
+      new Crystal(-500, this.groundLevel + 30, this),
+      new Crystal(-2500, this.groundLevel + 30, this),
+      new Crystal(-2000, this.groundLevel + 30, this),
+      new Crystal(-3000, this.groundLevel + 30, this),
     ];
     this.player.initImgs();
     this.backgrounds = [
-      [
-        new BackgroundLayer(this, 0),
-        new BackgroundLayer(this, 1),
-        new BackgroundLayer(this, 2),
-      ],
-      [
-        new FirstLayer(this, 0),
-        new FirstLayer(this, 1),
-        new FirstLayer(this, 2),
-      ],
-      [
-        new SecondLayer(this, 0),
-        new SecondLayer(this, 1),
-        new SecondLayer(this, 2),
-      ],
-      [
-        new ThirdLayer(this, 0),
-        new ThirdLayer(this, 1),
-        new ThirdLayer(this, 2),
-      ],
-      [
-        new ForthLayer(this, 0),
-        new ForthLayer(this, 1),
-        new ForthLayer(this, 2),
-      ],
+      [new BackgroundLayer(this, 0), new BackgroundLayer(this, 1), new BackgroundLayer(this, 2)],
+      [new FirstLayer(this, 0), new FirstLayer(this, 1), new FirstLayer(this, 2)],
+      [new SecondLayer(this, 0), new SecondLayer(this, 1), new SecondLayer(this, 2)],
+      [new ThirdLayer(this, 0), new ThirdLayer(this, 1), new ThirdLayer(this, 2)],
+      [new ForthLayer(this, 0), new ForthLayer(this, 1), new ForthLayer(this, 2)],
     ];
   }
 
+  /**
+   * updates all objects in the game, and checks for deletion of conusmables and enemies
+   */
   update() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.player.update();
     this.updateBackgrounds();
     this.updateEnemies();
-
     this.checkCollisions();
     this.deleteCrystals();
     this.updateCrystals();
     this.killEnemy();
   }
 
+  /**
+   * draws all objects on the canvas
+   */
   draw() {
     this.drawBackgrounds();
     this.drawEnemies();
@@ -115,6 +108,7 @@ export class World {
       crystal.update();
     });
   }
+
   drawBackgrounds() {
     this.backgrounds.forEach((backgroundLayerArr) => {
       backgroundLayerArr.forEach((backgroundLayer) => {
@@ -145,6 +139,11 @@ export class World {
     this.enemies.forEach((enemy) => enemy.draw());
   }
 
+  /**
+   * checks where the x coordinates of the backgrounds are, to archieve endless scrolling with 3 images total
+   *
+   * @param backgroundArr Array - The array of backgrounds of the world
+   */
   checkPlatformsRight(backgroundArr: Background[]) {
     if (backgroundArr[1].x + backgroundArr[1].width - 5 < 0) {
       const movedPlatform = backgroundArr.shift();
@@ -156,6 +155,11 @@ export class World {
     }
   }
 
+  /**
+   * checks where the x coordinates of the backgrounds are, to archieve endless scrolling with 3 images total
+   *
+   * @param backgroundArr Array - The array of backgrounds of the world
+   */
   checkPlatformLeft(backgroundArr: Background[]) {
     if (backgroundArr[1].x > this.width - 5) {
       const movedPlatform = backgroundArr.pop();
@@ -179,6 +183,12 @@ export class World {
     });
   }
 
+  /**
+   * checks if the player is direcly above an enemy and is falling, if the player than hits the top of the enemy hitbox, the enemy gets hurt and the player jumps
+   *
+   * @param enemy an Enemy of the World
+   * @returns nothing
+   */
   checkStomp(enemy: Enemie) {
     const player = this.player;
     player.hitbox.update();
@@ -190,11 +200,7 @@ export class World {
     const isHorizontalOverlap = p.x < e.x + e.width && p.x + p.width > e.x;
     const isVerticalOverlap = playerBottom >= enemyTop && p.y < e.y + e.height;
     if (this.player.stompCooldown === true) return;
-    if (
-      isHorizontalOverlap &&
-      isVerticalOverlap &&
-      player.state instanceof JumpingStateDescending
-    ) {
+    if (isHorizontalOverlap && isVerticalOverlap && player.velocityY > 0) {
       enemy.setState(new EnemyHurtState(this.player, enemy));
       this.player.velocityY = this.player.jumpForce;
       this.player.setState(new JumpingStateAscending(this.player));
@@ -205,6 +211,11 @@ export class World {
     }
   }
 
+  /**
+   * checks if an enemy and the player collide on the side of the hitboxes, and if sets the player into the hurt state
+   *
+   * @param enemy an Enemy of the World
+   */
   checkSideCollision(enemy: Enemie) {
     this.player.hitbox.update();
     enemy.hitbox.update();
@@ -213,23 +224,17 @@ export class World {
     const playerBottom = p.y + p.height;
     const enemyTop = e.y;
     const isHorizontalCollision = p.x < e.x + e.width && p.x + p.width > e.x;
-    const isVerticalOverlap =
-      playerBottom + 20 > enemyTop && p.y < e.y + e.height;
+    const isVerticalOverlap = playerBottom + 20 > enemyTop && p.y < e.y + e.height;
     const notFromAbove = playerBottom <= enemyTop + 10;
-    if (
-      isHorizontalCollision &&
-      isVerticalOverlap &&
-      !notFromAbove &&
-      !this.player.hitOnCooldown
-    ) {
+    if (isHorizontalCollision && isVerticalOverlap && !notFromAbove && !this.player.hitOnCooldown) {
       this.player.setState(new HurtState(this.player));
-      enemy.setState(new EnemyHurtState(this.player, enemy));
     }
   }
 
+  /**
+   * plays the game Over screen;
+   */
   gameOver() {
     gameOverMenu();
   }
-
-  won() {}
 }

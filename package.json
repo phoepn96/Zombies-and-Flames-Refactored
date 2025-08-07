@@ -9,7 +9,20 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.0",
+    "@typescript-eslint/parser": "^8.39.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
     "typescript": "~5.8.3",
     "vite": "^7.0.4"
-  }
+  },
+  "prettier": {
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "printWidth": 100
+}
+
 }

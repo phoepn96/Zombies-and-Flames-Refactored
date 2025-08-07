@@ -1,24 +1,27 @@
+/**
+ * input handler do monitor inputs, which is used in the playerState classes
+ */
 export class InputHandler {
-  lastInput: string = "";
+  lastInput: string = '';
   keyManager: KeyManager = {};
   isIdle: boolean = true;
 
   private relevantKeys = [
-    "w",
-    "a",
-    "s",
-    "d",
-    "arrowup",
-    "arrowdown",
-    "arrowleft",
-    "arrowright",
-    " ",
-    "f",
-    "control",
+    'w',
+    'a',
+    's',
+    'd',
+    'arrowup',
+    'arrowdown',
+    'arrowleft',
+    'arrowright',
+    ' ',
+    'f',
+    'control',
   ];
 
   constructor() {
-    document.addEventListener("keydown", (event: KeyboardEvent) => {
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
       if (!this.relevantKeys.includes(key)) return;
 
@@ -27,10 +30,9 @@ export class InputHandler {
       this.updateIdleState();
     });
 
-    document.addEventListener("keyup", (event: KeyboardEvent) => {
+    document.addEventListener('keyup', (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
       if (!this.relevantKeys.includes(key)) return;
-
       this.keyManager[key] = false;
       this.updateIdleState();
     });
@@ -39,19 +41,19 @@ export class InputHandler {
   }
 
   private setupTouchButtons() {
-    const buttons = document.querySelectorAll("[data-key]");
+    const buttons = document.querySelectorAll('[data-key]');
     buttons.forEach((btn) => {
-      const key = btn.getAttribute("data-key")?.toLowerCase();
+      const key = btn.getAttribute('data-key')?.toLowerCase();
       if (!key || !this.relevantKeys.includes(key)) return;
 
-      btn.addEventListener("touchstart", (e) => {
+      btn.addEventListener('touchstart', (e) => {
         e.preventDefault();
         this.keyManager[key] = true;
         this.lastInput = key;
         this.updateIdleState();
       });
 
-      btn.addEventListener("touchend", (e) => {
+      btn.addEventListener('touchend', (e) => {
         e.preventDefault();
         this.keyManager[key] = false;
         this.updateIdleState();
