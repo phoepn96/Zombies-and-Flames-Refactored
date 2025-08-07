@@ -15,7 +15,7 @@ export interface EnemyState {
   update(): void;
 }
 export class EnemyIdleState implements EnemyState {
-  constructor(private player: Player, private enemy: Enemie) {}
+  constructor(_player: Player, private enemy: Enemie) {}
   checkForAction(): void {}
   enter(): void {
     this.enemy.animation = AnimationEnemie.idle;

@@ -275,7 +275,7 @@ export class JumpingStateDescending implements PlayerState {
 export class AttackingStateGround implements PlayerState {
   constructor(private player: Player) {}
 
-  handleInput(input: InputHandler): void {
+  handleInput(_input: InputHandler): void {
     return;
   }
 
@@ -316,7 +316,7 @@ export class AttackingStateGround implements PlayerState {
 export class AttackingStateAir implements PlayerState {
   constructor(private player: Player) {}
 
-  handleInput(input: InputHandler): void {
+  handleInput(_input: InputHandler): void {
     return;
   }
 
@@ -365,7 +365,7 @@ export class AttackingStateAir implements PlayerState {
 export class SlidingStateRight implements PlayerState {
   constructor(private player: Player) {}
 
-  handleInput(input: InputHandler): void {}
+  handleInput(_input: InputHandler): void {}
 
   enter() {
     this.player.spritePosition = 0;
@@ -403,7 +403,7 @@ export class SlidingStateRight implements PlayerState {
 export class SlidingStateLeft implements PlayerState {
   constructor(private player: Player) {}
 
-  handleInput(input: InputHandler): void {}
+  handleInput(_input: InputHandler): void {}
 
   enter() {
     this.player.spritePosition = this.player.maxFrameCount;
@@ -444,7 +444,7 @@ export class SlidingStateLeft implements PlayerState {
 export class HurtState implements PlayerState {
   constructor(private player: Player) {}
 
-  handleInput(input: InputHandler): void {}
+  handleInput(_input: InputHandler): void {}
 
   enter() {
     if (this.player.hitOnCooldown) return;
@@ -484,7 +484,7 @@ export class HurtState implements PlayerState {
 export class DyingState implements PlayerState {
   constructor(private player: Player) {}
 
-  handleInput(input: InputHandler): void {}
+  handleInput(_input: InputHandler): void {}
 
   enter() {
     this.player.animation = AnimationPlayer.dying;
