@@ -85,7 +85,6 @@ function gameLoop(timestamp: number): void {
 }
 
 async function startGame(): Promise<void> {
-  await loadImages();
   world = new World(canvas, ctx);
   requestAnimationFrame(gameLoop);
 }
@@ -191,6 +190,28 @@ function addBackListener() {
 }
 
 addListeners();
-window.addEventListener("load", async () => {
-  await loadImages();
+window.addEventListener("load", () => {
+  loadImages();
+});
+
+function checkOrientation() {
+  const rotateScreen = document.getElementById("rotate-screen");
+  if (window.innerWidth < window.innerHeight) {
+    rotateScreen?.classList.remove("hide");
+  } else {
+    rotateScreen?.classList.add("hide");
+  }
+}
+
+window.addEventListener("resize", checkOrientation);
+window.addEventListener("orientationchange", checkOrientation);
+checkOrientation();
+
+window.addEventListener("resize", () => {
+  const mobileControls = document.getElementById("mobile-controls");
+  if (window.innerWidth <= 1024) {
+    mobileControls?.classList.remove("hide");
+  } else {
+    mobileControls?.classList.add("hide");
+  }
 });

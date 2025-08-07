@@ -34,6 +34,29 @@ export class InputHandler {
       this.keyManager[key] = false;
       this.updateIdleState();
     });
+
+    this.setupTouchButtons();
+  }
+
+  private setupTouchButtons() {
+    const buttons = document.querySelectorAll("[data-key]");
+    buttons.forEach((btn) => {
+      const key = btn.getAttribute("data-key")?.toLowerCase();
+      if (!key || !this.relevantKeys.includes(key)) return;
+
+      btn.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        this.keyManager[key] = true;
+        this.lastInput = key;
+        this.updateIdleState();
+      });
+
+      btn.addEventListener("touchend", (e) => {
+        e.preventDefault();
+        this.keyManager[key] = false;
+        this.updateIdleState();
+      });
+    });
   }
 
   private updateIdleState() {
