@@ -1,14 +1,9 @@
+import { imageCache } from "./imageCache";
 import { World } from "./world.class";
-
-const bg = document.getElementById("bg");
-const third = document.getElementById("third");
-const second = document.getElementById("second");
-const first = document.getElementById("first");
-const forth = document.getElementById("forth");
 
 export abstract class Background {
   abstract parallaxDivider: number;
-  abstract img: HTMLImageElement;
+  img!: HTMLImageElement;
   width: number;
   height: number;
   x: number;
@@ -30,40 +25,41 @@ export abstract class Background {
 }
 export class BackgroundLayer extends Background {
   parallaxDivider: number = 5;
-  img: HTMLImageElement = bg as HTMLImageElement;
   constructor(public world: World, public position: number) {
     super(world, position);
+    this.img = imageCache["bg"];
   }
 }
 
 export class FirstLayer extends Background {
   parallaxDivider: number = 5;
-  img: HTMLImageElement = first as HTMLImageElement;
+
   constructor(public world: World, public position: number) {
     super(world, position);
+    this.img = imageCache["first"];
   }
 }
 
 export class SecondLayer extends Background {
   parallaxDivider: number = 4;
-  img: HTMLImageElement = second as HTMLImageElement;
   constructor(world: World, position: number) {
     super(world, position);
+    this.img = imageCache["second"];
   }
 }
 
 export class ThirdLayer extends Background {
   parallaxDivider: number = 3;
-  img: HTMLImageElement = third as HTMLImageElement;
   constructor(public world: World, public position: number) {
     super(world, position);
+    this.img = imageCache["third"];
   }
 }
 
 export class ForthLayer extends Background {
   parallaxDivider: number = 2;
-  img: HTMLImageElement = forth as HTMLImageElement;
   constructor(public world: World, public position: number) {
     super(world, position);
+    this.img = imageCache["forth"];
   }
 }

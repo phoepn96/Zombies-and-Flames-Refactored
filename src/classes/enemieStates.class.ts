@@ -1,4 +1,4 @@
-import { soundManager } from "../main";
+import { soundManager, youWon } from "../main";
 import { Direction } from "./character.class";
 import {
   AnimationEnemie,
@@ -14,7 +14,19 @@ export interface EnemyState {
   enter(): void;
   update(): void;
 }
-
+export class EnemyIdleState implements EnemyState {
+  constructor(private player: Player, private enemy: Enemie) {}
+  checkForAction(): void {}
+  enter(): void {
+    this.enemy.animation = AnimationEnemie.idle;
+    if (this.enemy.direction === Direction.right) {
+      this.enemy.spritePosition = 0;
+    } else {
+      this.enemy.spritePosition = this.enemy.maxFrameCount;
+    }
+  }
+  update() {}
+}
 export class EnemyWalkingState implements EnemyState {
   constructor(private player: Player, private enemy: Enemie) {}
   checkForAction(): void {
@@ -89,8 +101,6 @@ export class EnemyAttackingState implements EnemyState {
       this.enemy.attackOnCooldown = true;
       if (this.enemy instanceof Boss) {
         this.enemy.fireProj();
-      } else {
-        soundManager.playSound("zombieAttack");
       }
       setTimeout(() => {
         this.enemy.attackOnCooldown = false;
@@ -124,6 +134,7 @@ export class EnemyHurtState implements EnemyState {
   constructor(private player: Player, private enemy: Enemie) {}
   checkForAction(): void {}
   enter(): void {
+    soundManager.playSound("zombieAttack");
     if (this.enemy.hurtOnCooldown) return;
     this.enemy.hp--;
     this.enemy.hurtOnCooldown = true;
@@ -178,7 +189,7 @@ export class EnemyDyingState implements EnemyState {
         SpriteFrameCountEnemy[AnimationEnemie.dying] - 1
       ) {
         if (this.enemy instanceof Boss) {
-          this.enemy.world.won();
+          youWon();
         }
         this.enemy.isDead = true;
       }
@@ -190,7 +201,7 @@ export class EnemyDyingState implements EnemyState {
           1
       ) {
         if (this.enemy instanceof Boss) {
-          this.enemy.world.won();
+          youWon();
         }
         this.enemy.isDead = true;
       }

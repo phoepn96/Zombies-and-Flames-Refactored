@@ -1,5 +1,6 @@
+import { imageCache } from "./imageCache";
 import { Character, Direction } from "./character.class";
-import { IdleState, PlayerState } from "./states.class";
+import { DyingState, IdleState, PlayerState } from "./states.class";
 import { World } from "./world.class";
 import { InputHandler } from "./inputHandler.class";
 import { Hitbox } from "./hitbox.class";
@@ -50,7 +51,7 @@ export class Player extends Character {
   maxFrameCount: number = 23;
 
   //Char stats
-  hp: number = 10;
+  hp: number = 5;
   speed: number = 10;
   public jumpForce: number = -20;
   public dashSpeed: number = 20;
@@ -94,8 +95,8 @@ export class Player extends Character {
   }
 
   initImgs() {
-    this.imgLeft = document.getElementById("playerLeft") as HTMLImageElement;
-    this.imgRight = document.getElementById("playerRight") as HTMLImageElement;
+    this.imgLeft = imageCache["playerRight"];
+    this.imgRight = imageCache["playerLeft"];
     this.img = this.imgRight;
   }
 
@@ -116,6 +117,7 @@ export class Player extends Character {
     this.hitbox.update();
     this.removeProjectiles();
     this.resetGround();
+    this.checkDead();
   }
 
   draw(): void {
@@ -175,17 +177,32 @@ export class Player extends Character {
     }
   }
 
+  checkDead() {
+    if (this.hp <= 0) {
+      this.hp = 0;
+      console.log(this.state);
+      if (this.state instanceof DyingState) return;
+      this.setState(new DyingState(this));
+    }
+  }
+
   animateSprite() {
     if (this.direction === Direction.right) {
-      if (this.spritePosition > SpriteFrameCount[this.animation] - 1)
+      if (this.spritePosition > SpriteFrameCount[this.animation] - 1) {
+        if (this.state instanceof DyingState) return;
         this.spritePosition = -1;
+      }
+
       this.spritePosition++;
     } else {
       if (
         this.spritePosition <
         this.maxFrameCount - SpriteFrameCount[this.animation] + 1
-      )
+      ) {
+        if (this.state instanceof DyingState) return;
         this.spritePosition = this.maxFrameCount + 1;
+      }
+
       this.spritePosition--;
     }
   }

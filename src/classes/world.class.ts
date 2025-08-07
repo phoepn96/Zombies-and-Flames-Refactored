@@ -11,7 +11,11 @@ import { Crystal } from "./crystal.class";
 import { Boss, Enemie, Zombie1, Zombie2 } from "./enemie.class";
 import { EnemyHurtState } from "./enemieStates.class";
 import { Player } from "./player.class";
-import { HurtState, JumpingStateAscending } from "./states.class";
+import {
+  HurtState,
+  JumpingStateAscending,
+  JumpingStateDescending,
+} from "./states.class";
 
 export class World {
   width: number;
@@ -35,9 +39,16 @@ export class World {
     this.playerStartingX = this.centerScreen;
     this.player = new Player(this.playerStartingX, this.groundLevel, this);
     this.enemies = [
-      new Boss(200, this.groundLevel - 40, this),
-      new Zombie1(50, this.groundLevel, this),
-      new Zombie2(400, this.groundLevel, this),
+      new Boss(-4000, this.groundLevel - 40, this),
+      new Zombie1(1000, this.groundLevel, this),
+      new Zombie2(2000, this.groundLevel, this),
+      new Boss(4000, this.groundLevel - 40, this),
+      new Zombie1(-1000, this.groundLevel, this),
+      new Zombie2(-2000, this.groundLevel, this),
+      new Zombie1(-1500, this.groundLevel, this),
+      new Zombie2(-2500, this.groundLevel, this),
+      new Zombie1(1500, this.groundLevel, this),
+      new Zombie2(2500, this.groundLevel, this),
     ];
     this.crystals = [
       new Crystal(200, this.groundLevel + 30, this),
@@ -135,7 +146,7 @@ export class World {
   }
 
   checkPlatformsRight(backgroundArr: Background[]) {
-    if (backgroundArr[1].x + backgroundArr[1].width < 0) {
+    if (backgroundArr[1].x + backgroundArr[1].width - 5 < 0) {
       const movedPlatform = backgroundArr.shift();
       if (movedPlatform) {
         const lastPlatform = backgroundArr[backgroundArr.length - 1];
@@ -146,7 +157,7 @@ export class World {
   }
 
   checkPlatformLeft(backgroundArr: Background[]) {
-    if (backgroundArr[1].x > this.width) {
+    if (backgroundArr[1].x > this.width - 5) {
       const movedPlatform = backgroundArr.pop();
       if (movedPlatform) {
         const firstPlatform = backgroundArr[0];
@@ -178,9 +189,12 @@ export class World {
     const enemyTop = e.y;
     const isHorizontalOverlap = p.x < e.x + e.width && p.x + p.width > e.x;
     const isVerticalOverlap = playerBottom >= enemyTop && p.y < e.y + e.height;
-    const isFalling = player.y < 600;
     if (this.player.stompCooldown === true) return;
-    if (isHorizontalOverlap && isVerticalOverlap && isFalling) {
+    if (
+      isHorizontalOverlap &&
+      isVerticalOverlap &&
+      player.state instanceof JumpingStateDescending
+    ) {
       enemy.setState(new EnemyHurtState(this.player, enemy));
       this.player.velocityY = this.player.jumpForce;
       this.player.setState(new JumpingStateAscending(this.player));

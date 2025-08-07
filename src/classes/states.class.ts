@@ -1,6 +1,7 @@
 import { Direction } from "./character.class";
 import { Player } from "./player.class";
 import { InputHandler } from "./inputHandler.class";
+import { EnemyIdleState } from "./enemieStates.class";
 
 export interface PlayerState {
   handleInput(input: InputHandler): void;
@@ -492,6 +493,9 @@ export class DyingState implements PlayerState {
     } else {
       this.player.spritePosition = this.player.maxFrameCount;
     }
+    this.player.world.enemies.forEach((enemie) => {
+      enemie.setState(new EnemyIdleState(this.player, enemie));
+    });
   }
 
   update() {

@@ -1,19 +1,10 @@
+import { imageCache } from "./imageCache";
 import { Character, Direction } from "./character.class";
 import { EnemyHurtState } from "./enemieStates.class";
 import { Hitbox } from "./hitbox.class";
 import { Player } from "./player.class";
 import { HurtState } from "./states.class";
 import { World } from "./world.class";
-
-const playerProjRight: HTMLImageElement = document.getElementById(
-  "playerProj"
-) as HTMLImageElement;
-const playerProjLeft: HTMLImageElement = document.getElementById(
-  "playerProjLeft"
-) as HTMLImageElement;
-const bossProj: HTMLImageElement = document.getElementById(
-  "bossProj"
-) as HTMLImageElement;
 
 export class Projectile {
   img!: HTMLImageElement;
@@ -39,8 +30,8 @@ export class Projectile {
   hitboxOffsetHeight: number = -70;
   bossProjDuration: number = 2;
   counter: number = 0;
-  imgRight: HTMLImageElement = playerProjRight;
-  imgLeft: HTMLImageElement = playerProjLeft;
+  imgRight!: HTMLImageElement;
+  imgLeft!: HTMLImageElement;
 
   constructor(originClass: Character, ctx: CanvasRenderingContext2D) {
     this.x = originClass.x;
@@ -52,7 +43,9 @@ export class Projectile {
     this.direction = originClass.direction;
 
     if (originClass instanceof Player) {
-      this.img = playerProjRight;
+      this.img = imageCache["playerProjLeft"];
+      this.imgLeft = imageCache["playerProjLeft"];
+      this.imgRight = imageCache["playerProjRight"];
       this.spriteRow = 0;
       this.spriteWidth = 1660;
       this.spriteHeight = 1070;
@@ -64,7 +57,7 @@ export class Projectile {
       this.hitboxOffsetWidth = -80;
       this.hitboxOffsetHeight = -70;
     } else {
-      this.img = bossProj;
+      this.img = imageCache["bossProj"];
       this.spriteRow = 0;
       this.spriteWidth = 339;
       this.spriteHeight = 404;

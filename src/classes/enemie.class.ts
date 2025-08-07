@@ -1,3 +1,4 @@
+import { imageCache } from "./imageCache";
 import { soundManager } from "../main";
 import { Character, Direction } from "./character.class";
 import {
@@ -9,28 +10,10 @@ import { Hitbox } from "./hitbox.class";
 import { Projectile } from "./projectile.class";
 import { World } from "./world.class";
 
-const reaperRight: HTMLImageElement = document.getElementById(
-  "reaperRight"
-) as HTMLImageElement;
-const reaperLeft: HTMLImageElement = document.getElementById(
-  "reaperLeft"
-) as HTMLImageElement;
-const zombie1Right: HTMLImageElement = document.getElementById(
-  "zombie1Right"
-) as HTMLImageElement;
-const zombie1Left: HTMLImageElement = document.getElementById(
-  "zombie1Left"
-) as HTMLImageElement;
-const zombie2Right: HTMLImageElement = document.getElementById(
-  "zombie2Right"
-) as HTMLImageElement;
-const zombie2Left: HTMLImageElement = document.getElementById(
-  "zombie2Left"
-) as HTMLImageElement;
-
 export enum AnimationEnemie {
   dying = 0,
   hurt = 2,
+  idle = 3,
   walking = 6,
   slashing = 8,
 }
@@ -40,6 +23,7 @@ export const SpriteFrameCountEnemy: Record<AnimationEnemie, number> = {
   [AnimationEnemie.hurt]: 11,
   [AnimationEnemie.walking]: 23,
   [AnimationEnemie.slashing]: 11,
+  [AnimationEnemie.idle]: 17,
 };
 
 export abstract class Enemie extends Character {
@@ -122,9 +106,9 @@ export class Boss extends Enemie {
   height: number = 150;
 
   //Img Stuff
-  protected imgLeft: HTMLImageElement = reaperLeft;
-  protected imgRight: HTMLImageElement = reaperRight;
-  protected img: HTMLImageElement = this.imgRight;
+  protected imgLeft!: HTMLImageElement;
+  protected imgRight!: HTMLImageElement;
+  protected img!: HTMLImageElement;
 
   //Stats
   hp: number = 5;
@@ -152,6 +136,9 @@ export class Boss extends Enemie {
 
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
+    this.imgRight = imageCache["bossRight"];
+    this.imgLeft = imageCache["bossLeft"];
+    this.img = this.imgRight;
   }
 
   fireProj() {
@@ -204,7 +191,9 @@ abstract class Zombie extends Enemie {
 
   hp = 2;
   speed: number = 3;
-
+  protected imgLeft!: HTMLImageElement;
+  protected imgRight!: HTMLImageElement;
+  protected img!: HTMLImageElement;
   hitboxOffsetX: number = -30;
   hitboxOffsetY: number = -25;
   hitboxOffsetWidth: number = -55;
@@ -225,21 +214,19 @@ abstract class Zombie extends Enemie {
 }
 
 export class Zombie1 extends Zombie {
-  protected imgRight: HTMLImageElement = zombie1Right;
-  protected imgLeft: HTMLImageElement = zombie1Left;
-  protected img: HTMLImageElement = this.imgRight;
-
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
+    this.imgRight = imageCache["zombie2Right"];
+    this.imgLeft = imageCache["zombie1Left"];
+    this.img = this.imgRight;
   }
 }
 
 export class Zombie2 extends Zombie {
-  protected imgRight: HTMLImageElement = zombie2Right;
-  protected imgLeft: HTMLImageElement = zombie2Left;
-  protected img: HTMLImageElement = this.imgRight;
-
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
+    this.imgRight = imageCache["zombie2Right"];
+    this.imgLeft = imageCache["zombie2Left"];
+    this.img = this.imgRight;
   }
 }

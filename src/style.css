@@ -13,6 +13,8 @@ body {
   align-items: center;
   height: 100%;
   background-image: url("/assets/spritesheets/bg/indexBg.png");
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  position: relative;
 }
 
 .hide {
@@ -24,8 +26,6 @@ canvas {
 }
 
 main {
-  display: flex;
-  justify-content: center;
   align-items: center;
   width: 720px;
   height: 480px;
@@ -36,6 +36,10 @@ main {
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
   justify-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 #startGame {
@@ -75,4 +79,120 @@ main {
   grid-column: 3/4;
   grid-row: 3/4;
   cursor: pointer;
+}
+
+#impressumContent {
+  width: 720px;
+  height: 480px;
+  overflow-y: auto;
+  padding-inline: 20px;
+}
+
+.impressum {
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.impressum__title {
+  font-size: 2em;
+  color: #ffffff;
+  margin-bottom: 1em;
+}
+
+.impressum__section {
+  margin-bottom: 2em;
+}
+
+.impressum__heading {
+  font-size: 1.2em;
+  color: #ffffff;
+  margin-bottom: 0.5em;
+}
+
+.impressum__text {
+  font-size: 1em;
+  line-height: 1.6;
+  margin: 0 0 1em;
+  color: aliceblue;
+}
+
+.impressum__link {
+  color: #ca5807;
+  text-decoration: none;
+}
+
+.impressum__link:hover {
+  text-decoration: underline;
+}
+.gameExplenationText {
+  color: white;
+}
+.gameExplenationHeading {
+  color: white;
+}
+.gameExplanation {
+  width: 720px;
+  height: 480px;
+  overflow-y: auto;
+  padding-inline: 20px;
+}
+
+.backToMenuBtn {
+  width: 150px;
+  height: 30px;
+  border: none;
+  border-radius: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.controls {
+  width: 720px;
+  height: 480px;
+  overflow-y: auto;
+  padding-inline: 20px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.controls__title {
+  font-size: 1.8em;
+  margin-bottom: 1em;
+}
+
+.controls__list {
+  list-style: none;
+  padding: 0;
+  font-size: 1.1em;
+}
+
+.controls__list li {
+  margin-bottom: 0.8em;
+}
+
+.controls__key {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-weight: bold;
+  font-family: monospace;
+  color: #111;
+  margin-right: 6px;
+}
+
+.end {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.endText {
+  color: rgb(58, 9, 9);
 }

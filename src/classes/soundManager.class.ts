@@ -31,6 +31,10 @@ export class SoundManager {
     }
   }
 
+  stopAllSounds() {
+    this.sounds.forEach((sound) => sound.pause());
+  }
+
   toggleMute() {
     this.muted = !this.muted;
     this.sounds.forEach((sound) => {
