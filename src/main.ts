@@ -145,7 +145,8 @@ function goToMenu() {
     menu.innerHTML = normalMenuTemp();
     menu.classList.remove('hide');
     canvas.classList.add('hide');
-    addListeners();
+    addListenerWithoutSound();
+    removeMobileControls();
   });
 }
 
@@ -170,6 +171,13 @@ function addListeners() {
   addSoundListener();
 }
 
+function addListenerWithoutSound() {
+  addStartGameListener();
+  addGameDescriptionListener();
+  addImpressumListener();
+  addControlsListener();
+}
+
 function addStartGameListener() {
   const startGameBtn: HTMLButtonElement = document.getElementById('startGame') as HTMLButtonElement;
   startGameBtn.addEventListener('click', () => {
@@ -187,6 +195,7 @@ function addGameDescriptionListener() {
   gameDescriptionBtn.addEventListener('click', () => {
     menu.innerHTML = gameDescriptionTemp();
     addBackListener();
+    hideSound();
   });
 }
 
@@ -195,6 +204,7 @@ function addImpressumListener() {
   impressumBtn.addEventListener('click', () => {
     menu.innerHTML = impressumTemp();
     addBackListener();
+    hideSound();
   });
 }
 
@@ -203,6 +213,7 @@ function addControlsListener() {
   controlsBtn.addEventListener('click', () => {
     menu.innerHTML = controlTemp();
     addBackListener();
+    hideSound();
   });
 }
 
@@ -220,7 +231,8 @@ function addBackListener() {
   const backBtn: HTMLButtonElement = document.getElementById('backBtn') as HTMLButtonElement;
   backBtn.addEventListener('click', () => {
     menu.innerHTML = normalMenuTemp();
-    addListeners();
+    addListenerWithoutSound();
+    showSound();
   });
 }
 
@@ -241,9 +253,6 @@ window.addEventListener('resize', checkOrientation);
 
 window.addEventListener('orientationchange', checkOrientation);
 checkOrientation();
-
-window.addEventListener('resize', checkMobileControls);
-
 window.addEventListener('load', addListeners);
 
 /**
@@ -256,4 +265,19 @@ function checkMobileControls() {
   } else {
     mobileControls?.classList.add('hide');
   }
+}
+
+function removeMobileControls() {
+  const mobileControls = document.getElementById('mobile-controls');
+  mobileControls?.classList.add('hide');
+}
+
+function hideSound() {
+  const soundButton: HTMLDivElement = document.getElementById('soundButton') as HTMLDivElement;
+  soundButton.classList.add('hide');
+}
+
+function showSound() {
+  const soundButton: HTMLDivElement = document.getElementById('soundButton') as HTMLDivElement;
+  soundButton.classList.remove('hide');
 }

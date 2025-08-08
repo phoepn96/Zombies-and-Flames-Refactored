@@ -11,6 +11,10 @@ export class Crystal {
     public y: number,
     public world: World
   ) {}
+
+  /**
+   * all stats needed to draw the crystal
+   */
   img: HTMLImageElement = imageCache['crystals'];
   frameWidth: number = 512;
   frameHeight: number = 512;

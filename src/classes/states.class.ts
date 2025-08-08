@@ -194,10 +194,10 @@ export class JumpingStateAscending implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.keyManager['d']) {
+    if (input.keyManager['d'] || input.keyManager['arrowright']) {
       this.player.direction = Direction.right;
       this.player.velocityX = this.player.speed;
-    } else if (input.keyManager['a']) {
+    } else if (input.keyManager['a'] || input.keyManager['arrowleft']) {
       this.player.direction = Direction.left;
       this.player.velocityX = -this.player.speed;
     }
@@ -237,10 +237,10 @@ export class JumpingStateDescending implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(input: InputHandler): void {
-    if (input.keyManager['d']) {
+    if (input.keyManager['d'] || input.keyManager['arrowright']) {
       this.player.direction = Direction.right;
       this.player.velocityX = this.player.speed;
-    } else if (input.keyManager['a']) {
+    } else if (input.keyManager['a'] || input.keyManager['arrowleft']) {
       this.player.direction = Direction.left;
       this.player.velocityX = -this.player.speed;
     }

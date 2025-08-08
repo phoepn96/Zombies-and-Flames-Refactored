@@ -24,7 +24,7 @@ export class InputHandler {
     document.addEventListener('keydown', (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
       if (!this.relevantKeys.includes(key)) return;
-
+      console.log(key);
       this.lastInput = key;
       this.keyManager[key] = true;
       this.updateIdleState();

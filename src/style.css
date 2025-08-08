@@ -26,6 +26,7 @@ canvas {
 }
 
 main {
+  position: relative;
   width: 720px;
   height: 480px;
   z-index: 100;
@@ -77,8 +78,10 @@ main {
   z-index: 100;
   cursor: pointer;
   position: absolute;
-  right: 32%;
-  bottom: 68%;
+  right: 10%;
+  top: 30%;
+  background-color: rgb(138, 16, 16);
+  border-radius: 20px;
 }
 
 #impressumContent {

@@ -6,6 +6,9 @@ import { World } from './world.class';
  * The hitbox of all objects which need to collide
  */
 export class Hitbox {
+  /**
+   * stats the hitbox requieres to draw
+   */
   x!: number;
   y!: number;
   world!: World;

@@ -32,6 +32,9 @@ export const SpriteFrameCountEnemy: Record<AnimationEnemie, number> = {
  * super class for all enemies in game, extends the character superclass
  */
 export abstract class Enemie extends Character {
+  /**
+   * stats for the enemies, that define how the character works
+   */
   projectileSpeed: number = 0;
   attackCooldownTime: number = 3;
   attackOnCooldown = false;
@@ -40,6 +43,7 @@ export abstract class Enemie extends Character {
   hurtOnCooldown: boolean = false;
   state: EnemyState = new EnemyWalkingState(this.world.player, this);
   animation: AnimationEnemie = AnimationEnemie.walking;
+
   constructor(startingX: number, startingY: number, world: World) {
     super(startingX, startingY, world);
   }
@@ -132,24 +136,32 @@ export abstract class Enemie extends Character {
  * class for the boss encounter of the game
  */
 export class Boss extends Enemie {
+  /**
+   * stats from the enemie needed for drawing
+   */
   width: number = 150;
   height: number = 150;
-
-  //Img Stuff
   protected imgLeft!: HTMLImageElement;
   protected imgRight!: HTMLImageElement;
   protected img!: HTMLImageElement;
 
-  //Stats
+  /**
+   * stats from the enemie for gameplay
+   */
   maxHp: number = 5;
   hp: number = 5;
   speed: number = 4;
 
-  //Animation Stuff
+  /**
+   * stats needed for the animations
+   */
   frameWidth: number = 80;
   frameHeight: number = 80;
   animation: AnimationEnemie = AnimationEnemie.walking;
-  //Hitbox etc..
+
+  /**
+   * stats needed for the hitboxes
+   */
   projectiles: Projectile[] = [];
   hitboxOffsetX: number = -38;
   hitboxOffsetY: number = -28;
@@ -262,17 +274,30 @@ export class Boss extends Enemie {
  * super class for the zombie instances which extent the Enemie superclass
  */
 abstract class Zombie extends Enemie {
+  /**
+   * size of the zombies
+   */
   width: number = 100;
   height: number = 100;
 
+  /**
+   * stats needed for drawing
+   */
   frameWidth: number = 80;
   frameHeight: number = 80;
-
-  hp = 2;
-  speed: number = 3;
   protected imgLeft!: HTMLImageElement;
   protected imgRight!: HTMLImageElement;
   protected img!: HTMLImageElement;
+
+  /**
+   * stats for gameplay
+   */
+  hp = 2;
+  speed: number = 3;
+
+  /**
+   * stats for the hitbox
+   */
   hitboxOffsetX: number = -30;
   hitboxOffsetY: number = -25;
   hitboxOffsetWidth: number = -55;

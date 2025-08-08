@@ -5,6 +5,9 @@ import { World } from './world.class';
  * Abstract class for my background Layers as a building block
  */
 export abstract class Background {
+  /**
+   * stats needed to draw the backgrounds
+   */
   abstract parallaxDivider: number;
   img!: HTMLImageElement;
   width: number;
@@ -21,10 +24,17 @@ export abstract class Background {
     this.x = position * this.width;
   }
 
+  /**
+   * draws the background
+   */
   public draw() {
     this.world.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 
+  /**
+   *
+   * @param velocityX number - velocity of the player on the x axis
+   */
   public moveBackground(velocityX: number) {
     this.x -= velocityX / this.parallaxDivider;
   }
