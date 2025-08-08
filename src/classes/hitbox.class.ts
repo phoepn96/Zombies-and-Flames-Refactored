@@ -30,10 +30,17 @@ export class Hitbox {
     this.height = height + offsetHeight;
   }
 
+  /**
+   * updates the hitbox
+   */
   update() {
     this.x = this.originClass.x - this.offsetX;
     this.y = this.originClass.y - this.offsetY;
   }
+
+  /**
+   * draws the hitbox
+   */
   draw() {
     this.ctx.strokeRect(this.x, this.y, this.width, this.height);
   }

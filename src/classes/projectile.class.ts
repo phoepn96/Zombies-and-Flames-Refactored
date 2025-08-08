@@ -61,6 +61,7 @@ export class Projectile {
       this.hitboxOffsetHeight = -70;
       if (this.direction === Direction.right) {
         this.img = this.imgRight;
+        this.hitboxOffsetX = -40;
       } else {
         this.img = this.imgLeft;
       }

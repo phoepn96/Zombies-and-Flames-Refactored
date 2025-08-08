@@ -261,7 +261,9 @@ window.addEventListener('load', addListeners);
 function checkMobileControls() {
   const mobileControls = document.getElementById('mobile-controls');
   if (window.innerWidth <= 1024) {
-    mobileControls?.classList.remove('hide');
+    if (navigator.userAgentData.mobile) {
+      mobileControls?.classList.remove('hide');
+    }
   } else {
     mobileControls?.classList.add('hide');
   }

@@ -13,6 +13,9 @@ export interface PlayerState {
   update(): void;
 }
 
+/**
+ * animations of the player as enum for the spritesheet
+ */
 export enum AnimationPlayer {
   dying = 0,
   descending = 1,
@@ -62,6 +65,9 @@ export class IdleState implements PlayerState {
     }
   }
 
+  /**
+   * sets the animation to idle
+   */
   enter() {
     this.player.isRunning = false;
     this.player.animation = AnimationPlayer.idle;
@@ -72,6 +78,9 @@ export class IdleState implements PlayerState {
     }
   }
 
+  /**
+   * sets the velocity x and y to 0 so the player doesnt move
+   */
   update() {
     this.player.velocityX = 0;
     this.player.velocityY = 0;
@@ -96,6 +105,9 @@ export class RunningStateRight implements PlayerState {
     }
   }
 
+  /**
+   * sets the animation to walking and the direction of the player
+   */
   enter() {
     this.player.isRunning = true;
     this.player.spritePosition = 0;
@@ -103,6 +115,9 @@ export class RunningStateRight implements PlayerState {
     this.player.setDirection(Direction.right);
   }
 
+  /**
+   * changes the velocity x of the player
+   */
   update() {
     this.player.velocityX = this.player.speed;
   }
@@ -126,6 +141,9 @@ export class RunningStateLeft implements PlayerState {
     }
   }
 
+  /**
+   * sets the animation to walking and the direction of the player
+   */
   enter() {
     this.player.isRunning = true;
     this.player.spritePosition = this.player.maxFrameCount;
@@ -133,6 +151,9 @@ export class RunningStateLeft implements PlayerState {
     this.player.setDirection(Direction.left);
   }
 
+  /**
+   * changes the velocity x of the player
+   */
   update() {
     this.player.velocityX = -this.player.speed;
   }
@@ -162,6 +183,9 @@ export class JumpingStateStart implements PlayerState {
     }
   }
 
+  /**
+   * sets the animation to ascending and plays the jump sound
+   */
   enter(): void {
     this.player.isRunning = false;
     soundManager.playSound('jump');
@@ -174,6 +198,9 @@ export class JumpingStateStart implements PlayerState {
     }
   }
 
+  /**
+   * if sprite is over sets the player in the ascending state
+   */
   update(): void {
     if (this.player.direction === Direction.right) {
       if (this.player.spritePosition > SpriteFrameCount[AnimationPlayer.jumpstart] - 1) {
@@ -216,6 +243,9 @@ export class JumpingStateAscending implements PlayerState {
     }
   }
 
+  /**
+   * sets the animation to ascending
+   */
   enter() {
     this.player.isRunning = false;
     this.player.animation = AnimationPlayer.ascending;
@@ -226,6 +256,9 @@ export class JumpingStateAscending implements PlayerState {
     }
   }
 
+  /**
+   * sets the descending state when player is falling back to ground
+   */
   update() {
     if (this.player.velocityY > 0) {
       this.player.setState(new JumpingStateDescending(this.player));
@@ -233,9 +266,16 @@ export class JumpingStateAscending implements PlayerState {
   }
 }
 
+/**
+ * Jumping descending class
+ */
 export class JumpingStateDescending implements PlayerState {
   constructor(private player: Player) {}
 
+  /**
+   *
+   * @param input handles the input from the inputhandler
+   */
   handleInput(input: InputHandler): void {
     if (input.keyManager['d'] || input.keyManager['arrowright']) {
       this.player.direction = Direction.right;
@@ -244,7 +284,6 @@ export class JumpingStateDescending implements PlayerState {
       this.player.direction = Direction.left;
       this.player.velocityX = -this.player.speed;
     }
-
     if (input.keyManager['f']) {
       this.player.setState(new AttackingStateAir(this.player));
     }
@@ -259,6 +298,9 @@ export class JumpingStateDescending implements PlayerState {
     }
   }
 
+  /**
+   * sets the animation to descending
+   */
   enter() {
     this.player.isRunning = false;
     this.player.isRunning = false;
@@ -270,6 +312,9 @@ export class JumpingStateDescending implements PlayerState {
     }
   }
 
+  /**
+   * resets the velocity y when player is on ground and gives it the idle state
+   */
   update() {
     if (this.player.isOnGround()) {
       this.player.velocityY = 0;
@@ -279,6 +324,9 @@ export class JumpingStateDescending implements PlayerState {
   }
 }
 
+/**
+ * Attacking while grounded state of the player
+ */
 export class AttackingStateGround implements PlayerState {
   constructor(private player: Player) {}
 
@@ -286,6 +334,9 @@ export class AttackingStateGround implements PlayerState {
     return;
   }
 
+  /**
+   * sets the animation of the player to the slashing on ground position
+   */
   enter() {
     this.player.isRunning = false;
     this.player.animation = AnimationPlayer.slashing;
@@ -296,6 +347,9 @@ export class AttackingStateGround implements PlayerState {
     }
   }
 
+  /**
+   * if srpite end reached fire a projectile and sets a new state based on the player position
+   */
   update() {
     if (this.player.direction === Direction.right) {
       this.player.velocityX = -this.player.speed / 2;
@@ -316,6 +370,9 @@ export class AttackingStateGround implements PlayerState {
   }
 }
 
+/**
+ * Class of the player while attacking in the air
+ */
 export class AttackingStateAir implements PlayerState {
   constructor(private player: Player) {}
 
@@ -323,6 +380,9 @@ export class AttackingStateAir implements PlayerState {
     return;
   }
 
+  /**
+   * sets the animation of the player to the slashing in air position, and
+   */
   enter() {
     this.player.isRunning = false;
     this.player.animation = AnimationPlayer.slashingAir;
@@ -333,6 +393,9 @@ export class AttackingStateAir implements PlayerState {
     }
   }
 
+  /**
+   * if srpite end reached fire a projectile and sets a new state based on the player position
+   */
   update() {
     if (this.player.direction === Direction.right) {
       this.player.velocityX = -this.player.speed / 2;
@@ -361,6 +424,9 @@ export class AttackingStateAir implements PlayerState {
   }
 }
 
+/**
+ * sliding staterigth of the player
+ */
 export class SlidingStateRight implements PlayerState {
   constructor(private player: Player) {}
 
@@ -372,6 +438,11 @@ export class SlidingStateRight implements PlayerState {
     this.player.animation = AnimationPlayer.sliding;
   }
 
+  /**
+   * changes the velocity x of the player for a short duration, returning if there are no crystals on the player
+   *
+   * @returns nothing
+   */
   update() {
     if (this.player.crystals <= 0) {
       this.player.setState(new IdleState(this.player));
@@ -389,6 +460,10 @@ export class SlidingStateRight implements PlayerState {
       }
     }
   }
+
+  /**
+   * sets the slide on cooldown
+   */
   setSlideOnCooldown() {
     this.player.slideOnCooldown = true;
     setTimeout(() => {
@@ -397,25 +472,34 @@ export class SlidingStateRight implements PlayerState {
   }
 }
 
+/**
+ * sliding stateleft of the player
+ */
 export class SlidingStateLeft implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(_input: InputHandler): void {}
 
+  /**
+   * sets the starting position and animation
+   */
   enter() {
     this.player.isRunning = false;
     this.player.spritePosition = this.player.maxFrameCount;
     this.player.animation = AnimationPlayer.sliding;
   }
 
+  /**
+   * changes the velocity x of the player for a short duration, returning if there are no crystals on the player
+   *
+   * @returns nothing
+   */
   update() {
     if (this.player.crystals <= 0) {
       this.player.setState(new IdleState(this.player));
       return;
     }
-
     this.player.velocityX = -this.player.dashSpeed;
-
     if (
       this.player.spritePosition <
       this.player.maxFrameCount - SpriteFrameCount[AnimationPlayer.sliding] + 1
@@ -431,6 +515,9 @@ export class SlidingStateLeft implements PlayerState {
     }
   }
 
+  /**
+   * sets the slide on cooldown
+   */
   setSlideOnCooldown() {
     this.player.slideOnCooldown = true;
     setTimeout(() => {
@@ -439,11 +526,17 @@ export class SlidingStateLeft implements PlayerState {
   }
 }
 
+/**
+ * hurt state of the player
+ */
 export class HurtState implements PlayerState {
   constructor(private player: Player) {}
 
   handleInput(_input: InputHandler): void {}
 
+  /**
+   * sets the animation of the hurt state and the frameX to the first one and triggers hp loss and cooldown on player getting hurt
+   */
   enter() {
     this.player.isRunning = false;
     if (this.player.hitOnCooldown) return;
@@ -460,6 +553,9 @@ export class HurtState implements PlayerState {
     }
   }
 
+  /**
+   * sets the velocityX to 0 and goes to a new state when finished
+   */
   update() {
     this.player.velocityX = 0;
     if (this.player.direction === Direction.right) {
@@ -482,6 +578,9 @@ export class DyingState implements PlayerState {
 
   handleInput(_input: InputHandler): void {}
 
+  /**
+   * sets the animation of the idle state and the frameX to the first one
+   */
   enter() {
     this.player.isRunning = false;
     this.player.animation = AnimationPlayer.dying;
@@ -495,6 +594,9 @@ export class DyingState implements PlayerState {
     });
   }
 
+  /**
+   * updates the dying state, if animation end reached plays gameover
+   */
   update() {
     this.player.velocityX = 0;
     if (this.player.direction === Direction.right) {

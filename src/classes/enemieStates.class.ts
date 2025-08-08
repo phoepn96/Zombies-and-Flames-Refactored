@@ -33,6 +33,9 @@ export class EnemyIdleState implements EnemyState {
   update() {}
 }
 
+/**
+ * walking class of the enemy
+ */
 export class EnemyWalkingState implements EnemyState {
   constructor(
     private player: Player,
@@ -46,8 +49,8 @@ export class EnemyWalkingState implements EnemyState {
    */
   checkForAction(): void {
     if (
-      this.player.hitbox.x + this.player.hitbox.width >= this.enemy.hitbox.x - 50 &&
-      this.player.hitbox.x <= this.enemy.hitbox.x + this.enemy.hitbox.width + 20
+      this.player.hitbox.x + this.player.hitbox.width >= this.enemy.hitbox.x &&
+      this.player.hitbox.x <= this.enemy.hitbox.x + this.enemy.hitbox.width
     ) {
       if (this.enemy.attackOnCooldown) return;
       this.enemy.setState(new EnemyAttackingState(this.enemy.world.player, this.enemy));
@@ -145,8 +148,8 @@ export class EnemyAttackingState implements EnemyState {
    */
   horizontalHit() {
     return (
-      this.player.hitbox.x + this.player.hitbox.width >= this.enemy.hitbox.x - 50 &&
-      this.player.hitbox.x <= this.enemy.hitbox.x + this.enemy.hitbox.width + 20
+      this.player.hitbox.x + this.player.hitbox.width >= this.enemy.hitbox.x &&
+      this.player.hitbox.x <= this.enemy.hitbox.x + this.enemy.hitbox.width
     );
   }
 
