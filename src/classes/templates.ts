@@ -1,7 +1,8 @@
 export function gameOverTemp() {
   return `<div class="end">
         <h2 class="endText">Game Over<h2>
-        <button id="playAgainBtn" class="menu"> Play Again</button>
+        <button id="playAgainBtn" class="menu">Play Again</button>
+        <button id="backBtn" class="menu">Menü</button>
        </div>
     `;
 }
@@ -9,6 +10,7 @@ export function gameOverTemp() {
 export function wonTemp() {
   return `<div class="end"><h2 class="endText"> GG's you won!<h2>
         <button id="playAgainBtn" class="menu"> Play Again</button>
+        <button id="backBtn" class="menu">Menü</button>
         </div>`;
 }
 
@@ -88,7 +90,7 @@ export function impressumTemp() {
         zumutbar. Bei Bekanntwerden von Rechtsverletzungen werde ich derartige Links umgehend entfernen.
       </p>
 
-      <button class="backToMenuBtn" id="backBtn">Zurück zum Menü</button>
+      <button class="backToMenuBtn" id="backBtn">Zurück</button>
     </section></div>`;
 }
 
@@ -112,7 +114,7 @@ export function gameDescriptionTemp() {
                     neuen Versuch starten. Und auch nach einem Sieg kannst du das Abenteuer von vorn beginnen. Viel
                     Erfolg!</p>
 
-                    <button class="backToMenuBtn" id="backBtn">Zurück zum Menü</button>
+                    <button class="backToMenuBtn" id="backBtn">Zurück</button>
             </div>`;
 }
 
@@ -126,13 +128,7 @@ export function normalMenuTemp() {
         src="assets/spritesheets/bg/logo.png"
       />
       <button class="menu big" id="startGame">Spielen</button>
-      <div id="soundButton">
-        <img
-          class="sound"
-          src="assets/spritesheets/bg/audio.png"
-          alt="Sound"
-        />
-      </div>`;
+  `;
 }
 
 export function controlTemp() {
@@ -144,8 +140,8 @@ export function controlTemp() {
     <li><span class="controls__key">D</span> oder <span class="controls__key">→</span> – nach rechts laufen</li>
     <li><span class="controls__key">Leertaste</span> – springen</li>
     <li><span class="controls__key">F</span> – Feuerball abfeuern</li>
-    <li><span class="controls__key">Strg</span> – Dash</li>
+    <li><span class="controls__key">Strg</span> – Dash wenn Diamanten vorhanden!</li>
   </ul>
- <button class="backToMenuBtn" id="backBtn">Zurück zum Menü</button>
+ <button class="backToMenuBtn" id="backBtn">Zurück</button>
 </section>`;
 }

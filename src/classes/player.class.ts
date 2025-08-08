@@ -72,6 +72,7 @@ export class Player extends Character {
   public stompCooldownTime = 0.2;
   public stompCooldown = false;
   public crystals: number = 0;
+  public isRunning: boolean = false;
 
   //State, Handlers, Inputs, etc..
   public state: PlayerState = new IdleState(this);
@@ -136,6 +137,7 @@ export class Player extends Character {
     this.removeProjectiles();
     this.resetGround();
     this.checkDead();
+    this.playWalkMusic();
   }
 
   /**
@@ -165,6 +167,14 @@ export class Player extends Character {
       this.img = this.imgRight;
     } else {
       this.img = this.imgLeft;
+    }
+  }
+
+  playWalkMusic() {
+    if (this.isRunning) {
+      soundManager.playPartialLoop('walk', 1.5, 3);
+    } else {
+      soundManager.stopSound('walk');
     }
   }
 

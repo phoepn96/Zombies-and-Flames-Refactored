@@ -2,6 +2,7 @@ import { Direction } from './character.class';
 import { Player } from './player.class';
 import { InputHandler } from './inputHandler.class';
 import { EnemyIdleState } from './enemieStates.class';
+import { soundManager } from '../main';
 
 /**
  * interface for all the playerstates, enter always sets the correct animation of the player, handle input always checks for the current inputs of the input handler and sets the states of the player
@@ -62,6 +63,7 @@ export class IdleState implements PlayerState {
   }
 
   enter() {
+    this.player.isRunning = false;
     this.player.animation = AnimationPlayer.idle;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
@@ -95,6 +97,7 @@ export class RunningStateRight implements PlayerState {
   }
 
   enter() {
+    this.player.isRunning = true;
     this.player.spritePosition = 0;
     this.player.animation = AnimationPlayer.walking;
     this.player.setDirection(Direction.right);
@@ -124,6 +127,7 @@ export class RunningStateLeft implements PlayerState {
   }
 
   enter() {
+    this.player.isRunning = true;
     this.player.spritePosition = this.player.maxFrameCount;
     this.player.animation = AnimationPlayer.walking;
     this.player.setDirection(Direction.left);
@@ -159,6 +163,8 @@ export class JumpingStateStart implements PlayerState {
   }
 
   enter(): void {
+    this.player.isRunning = false;
+    soundManager.playSound('jump');
     this.player.animation = AnimationPlayer.jumpstart;
     this.player.velocityY = this.player.jumpForce;
     if (this.player.direction === Direction.right) {
@@ -211,6 +217,7 @@ export class JumpingStateAscending implements PlayerState {
   }
 
   enter() {
+    this.player.isRunning = false;
     this.player.animation = AnimationPlayer.ascending;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
@@ -253,6 +260,8 @@ export class JumpingStateDescending implements PlayerState {
   }
 
   enter() {
+    this.player.isRunning = false;
+    this.player.isRunning = false;
     this.player.animation = AnimationPlayer.descending;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
@@ -278,6 +287,7 @@ export class AttackingStateGround implements PlayerState {
   }
 
   enter() {
+    this.player.isRunning = false;
     this.player.animation = AnimationPlayer.slashing;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
@@ -314,6 +324,7 @@ export class AttackingStateAir implements PlayerState {
   }
 
   enter() {
+    this.player.isRunning = false;
     this.player.animation = AnimationPlayer.slashingAir;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;
@@ -356,6 +367,7 @@ export class SlidingStateRight implements PlayerState {
   handleInput(_input: InputHandler): void {}
 
   enter() {
+    this.player.isRunning = false;
     this.player.spritePosition = 0;
     this.player.animation = AnimationPlayer.sliding;
   }
@@ -391,6 +403,7 @@ export class SlidingStateLeft implements PlayerState {
   handleInput(_input: InputHandler): void {}
 
   enter() {
+    this.player.isRunning = false;
     this.player.spritePosition = this.player.maxFrameCount;
     this.player.animation = AnimationPlayer.sliding;
   }
@@ -432,6 +445,7 @@ export class HurtState implements PlayerState {
   handleInput(_input: InputHandler): void {}
 
   enter() {
+    this.player.isRunning = false;
     if (this.player.hitOnCooldown) return;
     this.player.hitOnCooldown = true;
     setTimeout(() => {
@@ -469,6 +483,7 @@ export class DyingState implements PlayerState {
   handleInput(_input: InputHandler): void {}
 
   enter() {
+    this.player.isRunning = false;
     this.player.animation = AnimationPlayer.dying;
     if (this.player.direction === Direction.right) {
       this.player.spritePosition = 0;

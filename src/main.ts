@@ -47,6 +47,10 @@ soundManager.loadSound('pickup', 'assets/sounds/pickup.mp3', false, 0.5);
 soundManager.loadSound('reaperFlame', 'assets/sounds/reaperFlame.mp3', false, 0.5);
 soundManager.loadSound('bossSound', 'assets/sounds/bossSound.mp3', false, 0.5);
 soundManager.loadSound('backgroundMusic', 'assets/sounds/backgroundMusic.mp3', false, 0.2);
+soundManager.loadSound('win', 'assets/sounds/win.mp3', false, 0.2);
+soundManager.loadSound('lose', 'assets/sounds/lose.mp3', false, 0.2);
+soundManager.loadSound('jump', 'assets/sounds/jump.mp3', false, 0.2);
+soundManager.loadSound('walk', 'assets/sounds/walk.mp3', false, 0.2);
 
 /**
  * calculates deltaTime and loops each loop triggering updating and drawing the world
@@ -74,6 +78,10 @@ function gameLoop(timestamp: number): void {
  */
 async function startGame(): Promise<void> {
   await loadImages();
+  lastTime = 0;
+  accumulator = 0;
+  world = new World(canvas, ctx);
+  pauseGame = false;
   world = new World(canvas, ctx);
   requestAnimationFrame(gameLoop);
   checkMobileControls();
@@ -104,13 +112,14 @@ function toggleMusic() {
  */
 export function gameOverMenu() {
   pauseGame = true;
+  soundManager.playSound('lose');
   setTimeout(() => {
     menu.classList.remove('hide');
     menu.style.backgroundColor = 'transparent';
     menu.style.backgroundImage = 'none';
     menu.innerHTML = gameOverTemp();
     playAgainListener();
-    soundManager.stopAllSounds();
+    goToMenu();
   }, 3000);
 }
 
@@ -119,14 +128,25 @@ export function gameOverMenu() {
  */
 export function youWon() {
   pauseGame = true;
+  soundManager.playSound('win');
   setTimeout(() => {
     menu.classList.remove('hide');
     menu.style.backgroundColor = 'transparent';
     menu.style.backgroundImage = 'none';
     menu.innerHTML = wonTemp();
     playAgainListener();
-    soundManager.stopAllSounds();
+    goToMenu();
   }, 3000);
+}
+
+function goToMenu() {
+  const backBtn: HTMLButtonElement = document.getElementById('backBtn') as HTMLButtonElement;
+  backBtn.addEventListener('click', () => {
+    menu.innerHTML = normalMenuTemp();
+    menu.classList.remove('hide');
+    canvas.classList.add('hide');
+    addListeners();
+  });
 }
 
 /**

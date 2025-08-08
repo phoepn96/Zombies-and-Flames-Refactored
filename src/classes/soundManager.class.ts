@@ -32,11 +32,11 @@ export class SoundManager {
    * @param name string - key of the sound in the map
    * @returns nothing
    */
-  playSound(name: string) {
+  playSound(name: string, startTime: number = 0) {
     const sound = this.sounds.get(name);
     if (sound) {
       if (this.muted) return;
-      sound.currentTime = 0;
+      sound.currentTime = startTime;
       sound.play();
     }
   }
@@ -69,5 +69,24 @@ export class SoundManager {
       sound.muted = this.muted;
     });
     localStorage.setItem('muted', this.muted.toString());
+  }
+
+  /**
+   *
+   * @param name string - name of the sound
+   * @param start number - start of the sound
+   * @param end number - end of the sound
+   * @returns nothing
+   */
+  playPartialLoop(name: string, start: number, end: number) {
+    const sound = this.sounds.get(name);
+    if (!sound) return;
+    if (sound.currentTime >= end) {
+      sound.currentTime = start;
+    }
+    if (sound.paused) {
+      sound.play();
+      sound.currentTime = start;
+    }
   }
 }

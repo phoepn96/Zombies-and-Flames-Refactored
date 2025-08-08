@@ -141,6 +141,7 @@ export class Boss extends Enemie {
   protected img!: HTMLImageElement;
 
   //Stats
+  maxHp: number = 5;
   hp: number = 5;
   speed: number = 4;
 
@@ -150,9 +151,9 @@ export class Boss extends Enemie {
   animation: AnimationEnemie = AnimationEnemie.walking;
   //Hitbox etc..
   projectiles: Projectile[] = [];
-  hitboxOffsetX: number = -30;
+  hitboxOffsetX: number = -38;
   hitboxOffsetY: number = -28;
-  hitboxOffsetWidth: number = -65;
+  hitboxOffsetWidth: number = -80;
   hitboxOffsetHeight: number = -50;
   hitbox: Hitbox = new Hitbox(
     this,
@@ -211,6 +212,39 @@ export class Boss extends Enemie {
       this.y,
       this.width,
       this.height
+    );
+    this.drawLifeBar();
+  }
+
+  /**
+   * draws the lifebar of the boss
+   */
+  private drawLifeBar() {
+    const offset = 2;
+    const lifebarWidth = this.width;
+    const lifebarHeight = 10;
+    const y = this.hitbox.y - lifebarHeight;
+    this.world.ctx.fillStyle = '#3b0d0d';
+    this.world.ctx.fillRect(this.x, y, lifebarWidth, lifebarHeight);
+    const ratio = Math.max(0, Math.min(1, this.hp / this.maxHp));
+    this.world.ctx.fillStyle = '#e53935';
+    this.world.ctx.fillRect(
+      this.x + offset,
+      y + offset,
+      (lifebarWidth - offset * 2) * ratio,
+      lifebarHeight - offset * 2
+    );
+    this.world.ctx.strokeStyle = '#000';
+    this.world.ctx.lineWidth = 1;
+    this.world.ctx.strokeRect(this.x, y, lifebarWidth, lifebarHeight);
+    this.world.ctx.font = '10px sans-serif';
+    this.world.ctx.fillStyle = '#fff';
+    this.world.ctx.textAlign = 'center';
+    this.world.ctx.textBaseline = 'middle';
+    this.world.ctx.fillText(
+      `${this.hp}/${this.maxHp}`,
+      this.x + lifebarWidth / 2,
+      y + lifebarHeight / 2
     );
   }
 
