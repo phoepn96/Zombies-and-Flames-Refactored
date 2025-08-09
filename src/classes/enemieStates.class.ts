@@ -57,6 +57,9 @@ export class EnemyWalkingState implements EnemyState {
     }
   }
 
+  /**
+   * sest the animation to animation walking
+   */
   enter(): void {
     this.enemy.animation = AnimationEnemie.walking;
     if (this.enemy.direction === Direction.right) {
@@ -95,6 +98,9 @@ export class EnemyAttackingState implements EnemyState {
     return;
   }
 
+  /**
+   * sest the animation to animation slashing
+   */
   enter(): void {
     this.enemy.animation = AnimationEnemie.slashing;
     if (this.enemy.direction === Direction.right) {
