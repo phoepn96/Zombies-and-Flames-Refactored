@@ -29,6 +29,9 @@ export enum AnimationPlayer {
   sliding = 11,
 }
 
+/**
+ * Record thats holds the frames of the corrosponding animation
+ */
 const SpriteFrameCount: Record<AnimationPlayer, number> = {
   [AnimationPlayer.dying]: 14,
   [AnimationPlayer.descending]: 5,
@@ -42,9 +45,17 @@ const SpriteFrameCount: Record<AnimationPlayer, number> = {
   [AnimationPlayer.sliding]: 5,
 };
 
+/**
+ * idle state of the player
+ */
 export class IdleState implements PlayerState {
   constructor(private player: Player) {}
 
+  /**
+   * handles the current inputs and sets new states based on these inputs
+   *
+   * @param input the inputhandler of the player
+   */
   handleInput(input: InputHandler): void {
     if (input.keyManager['d'] || input.keyManager['arrowright']) {
       this.player.setState(new RunningStateRight(this.player));
@@ -87,9 +98,17 @@ export class IdleState implements PlayerState {
   }
 }
 
+/**
+ * The running state of the player to the right
+ */
 export class RunningStateRight implements PlayerState {
   constructor(private player: Player) {}
 
+  /**
+   * handles the current inputs and sets new states based on these inputs
+   *
+   * @param input the inputhandler of the player
+   */
   handleInput(input: InputHandler): void {
     if (input.isIdle && this.player.isOnGround()) {
       this.player.setState(new IdleState(this.player));
@@ -123,9 +142,17 @@ export class RunningStateRight implements PlayerState {
   }
 }
 
+/**
+ * the running state of the player left
+ */
 export class RunningStateLeft implements PlayerState {
   constructor(private player: Player) {}
 
+  /**
+   * handles the current inputs and sets new states based on these inputs
+   *
+   * @param input the inputhandler of the player
+   */
   handleInput(input: InputHandler): void {
     if (input.keyManager['d'] || input.keyManager['arrowright']) {
       this.player.setState(new RunningStateRight(this.player));
@@ -159,9 +186,17 @@ export class RunningStateLeft implements PlayerState {
   }
 }
 
+/**
+ * the jumping start state of the player
+ */
 export class JumpingStateStart implements PlayerState {
   constructor(private player: Player) {}
 
+  /**
+   * handles the current inputs and sets new states based on these inputs
+   *
+   * @param input the inputhandler of the player
+   */
   handleInput(input: InputHandler): void {
     if (input.keyManager['d'] || input.keyManager['arrowright']) {
       this.player.direction = Direction.right;
@@ -217,9 +252,17 @@ export class JumpingStateStart implements PlayerState {
   }
 }
 
+/**
+ * the jumping state ascening of the player
+ */
 export class JumpingStateAscending implements PlayerState {
   constructor(private player: Player) {}
 
+  /**
+   * handles the current inputs and sets new states based on these inputs
+   *
+   * @param input the inputhandler of the player
+   */
   handleInput(input: InputHandler): void {
     if (input.keyManager['d'] || input.keyManager['arrowright']) {
       this.player.direction = Direction.right;
@@ -376,9 +419,12 @@ export class AttackingStateGround implements PlayerState {
 export class AttackingStateAir implements PlayerState {
   constructor(private player: Player) {}
 
-  handleInput(_input: InputHandler): void {
-    return;
-  }
+  /**
+   * handles the current inputs and sets new states based on these inputs
+   *
+   * @param input the inputhandler of the player
+   */
+  handleInput(_input: InputHandler): void {}
 
   /**
    * sets the animation of the player to the slashing in air position, and
@@ -573,9 +619,17 @@ export class HurtState implements PlayerState {
   }
 }
 
+/**
+ * the dying state of the player
+ */
 export class DyingState implements PlayerState {
   constructor(private player: Player) {}
 
+  /**
+   * handles the current inputs and sets new states based on these inputs
+   *
+   * @param input the inputhandler of the player
+   */
   handleInput(_input: InputHandler): void {}
 
   /**

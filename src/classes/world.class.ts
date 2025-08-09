@@ -97,18 +97,27 @@ export class World {
     this.drawCrystals();
   }
 
+  /**
+   * draws the crystals
+   */
   drawCrystals() {
     this.crystals.forEach((crystal) => {
       crystal.draw();
     });
   }
 
+  /**
+   * updates the crystals
+   */
   updateCrystals() {
     this.crystals.forEach((crystal) => {
       crystal.update();
     });
   }
 
+  /**
+   * draws the backgrounds
+   */
   drawBackgrounds() {
     this.backgrounds.forEach((backgroundLayerArr) => {
       backgroundLayerArr.forEach((backgroundLayer) => {
@@ -117,6 +126,9 @@ export class World {
     });
   }
 
+  /**
+   * updates the backgrounds
+   */
   updateBackgrounds() {
     this.backgrounds.forEach((backgroundLayerArr) => {
       this.checkPlatformsRight(backgroundLayerArr);
@@ -124,10 +136,16 @@ export class World {
     });
   }
 
+  /**
+   * updates the enemies
+   */
   updateEnemies() {
     this.enemies.forEach((enemy) => enemy.update());
   }
 
+  /**
+   * checks for collision between enemies and the player
+   */
   checkCollisions() {
     this.enemies.forEach((enemy) => {
       this.checkStomp(enemy);
@@ -135,6 +153,9 @@ export class World {
     });
   }
 
+  /**
+   * draws the enemies
+   */
   drawEnemies() {
     this.enemies.forEach((enemy) => enemy.draw());
   }
@@ -171,12 +192,18 @@ export class World {
     }
   }
 
+  /**
+   * deletes crystals by filtering them out
+   */
   deleteCrystals() {
     this.crystals = this.crystals.filter((crystal) => {
       return !crystal.isPickedUp;
     });
   }
 
+  /**
+   * deletes enemies by filtering them out
+   */
   killEnemy() {
     this.enemies = this.enemies.filter((enemy) => {
       return !enemy.isDead;
