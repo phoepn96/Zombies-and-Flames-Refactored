@@ -1,3 +1,7 @@
+/**
+ *
+ * @returns the gameOver template
+ */
 export function gameOverTemp() {
   return `<div class="end">
         <h2 class="endText">Game Over<h2>
@@ -7,6 +11,10 @@ export function gameOverTemp() {
     `;
 }
 
+/**
+ *
+ * @returns the you won template
+ */
 export function wonTemp() {
   return `<div class="end"><h2 class="endText"> GG's you won!<h2>
         <button id="playAgainBtn" class="menu"> Play Again</button>
@@ -14,6 +22,10 @@ export function wonTemp() {
         </div>`;
 }
 
+/**
+ *
+ * @returns the mute Template
+ */
 export function muteTemp() {
   return ` <img
           class="sound"
@@ -22,6 +34,10 @@ export function muteTemp() {
         />`;
 }
 
+/**
+ *
+ * @returns the audio template
+ */
 export function audioTemp() {
   return ` <img
           class="sound"
@@ -30,6 +46,10 @@ export function audioTemp() {
         />`;
 }
 
+/**
+ *
+ * @returns the impressum template
+ */
 export function impressumTemp() {
   return ` <div id="impressumContent"> <h1 class="impressum__title">Impressum</h1>
 
@@ -94,6 +114,10 @@ export function impressumTemp() {
     </section></div>`;
 }
 
+/**
+ *
+ * @returns the game description template
+ */
 export function gameDescriptionTemp() {
   return `  <div class="gameExplanation">
                 <h2 class="gameExplenationHeading">Spielablauf</h2>
@@ -118,6 +142,10 @@ export function gameDescriptionTemp() {
             </div>`;
 }
 
+/**
+ *
+ * @returns the normalmenu template
+ */
 export function normalMenuTemp() {
   return `<button class="menu" id="impressum">Impressum</button>
       <button class="menu" id="controls">Steuerung</button>
@@ -131,6 +159,10 @@ export function normalMenuTemp() {
   `;
 }
 
+/**
+ *
+ * @returns the controls template
+ */
 export function controlTemp() {
   return `
   <section class="controls">

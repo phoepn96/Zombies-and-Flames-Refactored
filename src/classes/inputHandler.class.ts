@@ -75,6 +75,9 @@ export class InputHandler {
   }
 }
 
+/**
+ * type for the keymanager
+ */
 type KeyManager = {
   [key: string]: boolean;
 };

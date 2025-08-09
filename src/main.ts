@@ -139,6 +139,9 @@ export function youWon() {
   }, 3000);
 }
 
+/**
+ *renders the basic menu
+ */
 function goToMenu() {
   const backBtn: HTMLButtonElement = document.getElementById('backBtn') as HTMLButtonElement;
   backBtn.addEventListener('click', () => {
@@ -171,6 +174,9 @@ function addListeners() {
   addSoundListener();
 }
 
+/**
+ * adds all eventlisteners for the main menu exept for the sound
+ */
 function addListenerWithoutSound() {
   addStartGameListener();
   addGameDescriptionListener();
@@ -178,6 +184,9 @@ function addListenerWithoutSound() {
   addControlsListener();
 }
 
+/**
+ * adds a eventlistener to the start game button
+ */
 function addStartGameListener() {
   const startGameBtn: HTMLButtonElement = document.getElementById('startGame') as HTMLButtonElement;
   startGameBtn.addEventListener('click', () => {
@@ -188,6 +197,9 @@ function addStartGameListener() {
   });
 }
 
+/**
+ * adds a eventlistener to the gamedescription button
+ */
 function addGameDescriptionListener() {
   const gameDescriptionBtn: HTMLButtonElement = document.getElementById(
     'gameplay'
@@ -199,6 +211,9 @@ function addGameDescriptionListener() {
   });
 }
 
+/**
+ * adss a eventlistener to the impressum button
+ */
 function addImpressumListener() {
   const impressumBtn: HTMLButtonElement = document.getElementById('impressum') as HTMLButtonElement;
   impressumBtn.addEventListener('click', () => {
@@ -208,6 +223,9 @@ function addImpressumListener() {
   });
 }
 
+/**
+ * adds a eventlistener to the control buttons
+ */
 function addControlsListener() {
   const controlsBtn: HTMLButtonElement = document.getElementById('controls') as HTMLButtonElement;
   controlsBtn.addEventListener('click', () => {
@@ -217,6 +235,9 @@ function addControlsListener() {
   });
 }
 
+/**
+ * adds a eventlistener to the sound button
+ */
 function addSoundListener() {
   const soundButton: HTMLDivElement = document.getElementById('soundButton') as HTMLDivElement;
   soundButton.addEventListener('click', () => {
@@ -225,7 +246,7 @@ function addSoundListener() {
 }
 
 /**
- *
+ *adds eventliosteners to the menu buttons
  */
 function addBackListener() {
   const backBtn: HTMLButtonElement = document.getElementById('backBtn') as HTMLButtonElement;
@@ -237,18 +258,20 @@ function addBackListener() {
 }
 
 /**
- * checks if the width of the device is smaller than the height, and if so shows a div so change that, that is ment for mobile users
+ * checks if the device is in landscape mode, if not than it shows a screen to switch to landscpae mode
  */
 function checkOrientation() {
   const rotateScreen = document.getElementById('rotate-screen');
-
-  if (window.innerWidth < window.innerHeight) {
-    if (window.innerWidth <= 1024) rotateScreen?.classList.remove('hide');
-  } else {
+  if (window.matchMedia('(orientation: landscape)').matches) {
     rotateScreen?.classList.add('hide');
+  } else {
+    rotateScreen?.classList.remove('hide');
   }
 }
 
+/**
+ * adds a eventlistener to check for orientation
+ */
 window.addEventListener('resize', checkOrientation);
 
 window.addEventListener('orientationchange', checkOrientation);
@@ -260,25 +283,32 @@ window.addEventListener('load', addListeners);
  */
 function checkMobileControls() {
   const mobileControls = document.getElementById('mobile-controls');
-  if (window.innerWidth <= 1024) {
-    if (navigator.userAgentData.mobile) {
-      mobileControls?.classList.remove('hide');
-    }
+  if (window.matchMedia('(pointer: coarse)').matches) {
+    mobileControls?.classList.remove('hide');
   } else {
     mobileControls?.classList.add('hide');
   }
 }
 
+/**
+ * hides the mobile controls
+ */
 function removeMobileControls() {
   const mobileControls = document.getElementById('mobile-controls');
   mobileControls?.classList.add('hide');
 }
 
+/**
+ * hides the sound button
+ */
 function hideSound() {
   const soundButton: HTMLDivElement = document.getElementById('soundButton') as HTMLDivElement;
   soundButton.classList.add('hide');
 }
 
+/**
+ * shows the sound buttons
+ */
 function showSound() {
   const soundButton: HTMLDivElement = document.getElementById('soundButton') as HTMLDivElement;
   soundButton.classList.remove('hide');

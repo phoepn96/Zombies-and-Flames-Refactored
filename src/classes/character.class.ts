@@ -53,6 +53,9 @@ export abstract class Character {
     this.world = world;
   }
 
+  /**
+   * updates the character
+   */
   abstract update(): void;
 
   /**
